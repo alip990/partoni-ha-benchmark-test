@@ -1,0 +1,18 @@
+# Use Python image
+FROM locustio/locust
+
+# Set the working directory
+WORKDIR /mnt/locust
+
+COPY requirements.txt .
+COPY locustfile.py .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+# Expose Locust's default web interface port
+EXPOSE 8089
+
+# Run Locust
+CMD ["locust", "-f", "locustfile.py"]
