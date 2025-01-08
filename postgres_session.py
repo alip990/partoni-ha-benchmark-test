@@ -145,15 +145,14 @@ class PostgresSession:
         """
         Execute a SQL query with optional parameters.
         """
-
         try:
             start_time = time.time()
-
             self._cursor.execute(query, params)
             if self._cursor.description:
                 result = self._cursor.fetchall()
                 response_length = len(result)
             else:
+                result = []
                 response_length = self._cursor.rowcount
             response_time = (time.time() - start_time) * 1000  # milliseconds
             self.request_event.fire(
@@ -167,15 +166,15 @@ class PostgresSession:
                 response_time=response_time,
                 exception=None,
                 response_length=response_length,
-                result=result if self._cursor.description else []
+                result=result
             )
         except (OperationalError, DatabaseError) as oe:
             if retry_counter >= 5:
                 exception = OperationalError(
-                    "Failed to establish connection" + str(oe))
+                    "Failed to establish connection: " + str(oe))
                 self.request_event.fire(
                     request_type="PG_QUERY",
-                    name="QUERY_FAILED",
+                    name=query.split()[0].upper(),
                     response_time=0,
                     response_length=0,
                     exception=exception,
@@ -191,17 +190,16 @@ class PostgresSession:
                 retry_counter += 1
                 time.sleep(1)
                 self.reset()
-                self.execute_query(query, params, retry_counter)
+                return self.execute_query(query, params, retry_counter)  # Added return
         except (Exception, psycopg2.Error) as error:
-            exception = OperationalError("Unkonw error connection" + str(error))
+            exception = OperationalError("Unknown error connection: " + str(error))
             self.request_event.fire(
                 request_type="PG_QUERY",
-                name="QUERY_FAILED",
+                name=query.split()[0].upper(),
                 response_time=0,
                 response_length=0,
                 exception=exception,
             )
-
             return PostgresResponse(
                 success=False,
                 response_time=0,

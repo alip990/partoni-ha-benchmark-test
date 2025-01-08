@@ -677,7 +677,6 @@ def write_data(client):
         if not device_item_res.success or not device_item_res.response_length:
             raise Exception("Failed to insert new DeviceItem.")
 
-        logger.info("write: Inserted Device + DeviceItem successfully.")
         return device_item_res
 
     except Exception as e:
@@ -709,7 +708,9 @@ def read_join(client):
         LIMIT 50;
         """
         result = client.execute_query(query)
-        logger.info(f"read_join: retrieved {result.response_length if result.success else 0} rows.")
+        if not result.success or not result.response_length:
+            raise Exception("Failed to insert new DeviceItem.")
+
         return result
     except Exception as e:
         logger.error(f"read_join error: {e}")
