@@ -1,19 +1,16 @@
-from psycopg2 import DatabaseError, OperationalError, pool
+from psycopg2 import DatabaseError, OperationalError
 import logging
 import time
-# Configure logging
 from typing import Any, List, Optional
 import psycopg2
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 log_file = 'log.log'
 file_handler = logging.FileHandler(log_file)
-
 file_handler.setLevel(logging.ERROR)  # Capture all levels to the file
-
 logger.addHandler(file_handler)
-
 formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
@@ -37,7 +34,7 @@ class PostgresResponse:
         self.result = result or []
 
     def __str__(self):
-        return "succes: "+str(self.success)+" ,result: " + str(self.result) + ",exeception: " + str(self.exception)
+        return f"success: {self.success}, result: {self.result}, exception: {self.exception}"
 
 
 CONNECTION_LIMIT_RETRIES = 3
@@ -61,7 +58,7 @@ class PostgresSession:
         self.request_event = request_event
         self.connection = None
         self._cursor = None
-
+        self.reconnect = True  # Define reconnect behavior
         self.init()
 
     def init(self):
@@ -84,8 +81,7 @@ class PostgresSession:
                     connect_timeout=3,
                 )
                 self.connection.autocommit = True
-                response_time = (time.time() - start_time) * \
-                    1000  # milliseconds
+                response_time = (time.time() - start_time) * 1000  # milliseconds
                 self.request_event.fire(
                     request_type="PG_QUERY",
                     name="CONNECT",
@@ -96,8 +92,7 @@ class PostgresSession:
                     f"Established connection to PostgreSQL at {self.host}:{self.port}")
                 return self.connection
             except psycopg2.OperationalError as oe:
-                response_time = (time.time() - start_time) * \
-                    1000  # milliseconds
+                response_time = (time.time() - start_time) * 1000  # milliseconds
                 self.request_event.fire(
                     request_type="PG_QUERY",
                     name="CONNECT",
@@ -107,23 +102,23 @@ class PostgresSession:
                 )
                 if not self.reconnect or retry_counter >= CONNECTION_LIMIT_RETRIES:
                     logger.error(
-                        f"OperationalError  reconnection retry exceeded: {oe}")
-                    raise error
+                        f"OperationalError reconnection retry exceeded: {oe}")
+                    raise oe  # Corrected from 'raise error'
                 else:
                     logger.error(
-                        f"OperationalError  or Databaseduring connection: {oe}")
+                        f"OperationalError during connection: {oe}")
                     self.connection = None
                     retry_counter += 1
                     time.sleep(2)
-                    self.connect(retry_counter)
+                    return self.connect(retry_counter)  # Added return
             except (Exception, psycopg2.Error) as error:
-                logger.error(f"Unkown error during connect: {error}")
+                logger.error(f"Unknown error during connect: {error}")
                 self.request_event.fire(
                     request_type="PG_QUERY",
                     name="CONNECT",
                     response_time=0,
                     response_length=0,
-                    exception=e,
+                    exception=error,  # Corrected from 'e'
                 )
                 self.connection = None
 
