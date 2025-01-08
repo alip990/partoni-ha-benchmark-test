@@ -1,15 +1,17 @@
-from psycopg2 import DatabaseError, OperationalError
 import logging
 import time
 from typing import Any, List, Optional
 import psycopg2
+from psycopg2 import DatabaseError, OperationalError
+from psycopg2 import pool
+from locust import events  # Import Locust events for reporting
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 log_file = 'log.log'
 file_handler = logging.FileHandler(log_file)
-file_handler.setLevel(logging.ERROR)  # Capture all levels to the file
+file_handler.setLevel(logging.ERROR)  # Capture all ERROR and above to the file
 logger.addHandler(file_handler)
 formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -67,60 +69,113 @@ class PostgresSession:
 
     def connect(self, retry_counter=0):
         """
-        Establish a connection to the PostgreSQL server.
+        Establish a connection to the PostgreSQL server with retry logic.
+        Tracks downtime and retry attempts and reports them to Locust.
         """
         if not self.connection:
-            try:
-                start_time = time.time()
-                self.connection = psycopg2.connect(
-                    host=self.host,
-                    port=self.port,
-                    dbname=self.database,
-                    user=self.user,
-                    password=self.password,
-                    connect_timeout=3,
-                )
-                self.connection.autocommit = True
-                response_time = (time.time() - start_time) * 1000  # milliseconds
-                self.request_event.fire(
-                    request_type="PG_QUERY",
-                    name="CONNECT",
-                    response_time=response_time,
-                    response_length=0,
-                )
-                logger.info(
-                    f"Established connection to PostgreSQL at {self.host}:{self.port}")
-                return self.connection
-            except psycopg2.OperationalError as oe:
-                response_time = (time.time() - start_time) * 1000  # milliseconds
-                self.request_event.fire(
-                    request_type="PG_QUERY",
-                    name="CONNECT",
-                    response_time=response_time,
-                    response_length=0,
-                    exception=oe,
-                )
-                if not self.reconnect or retry_counter >= CONNECTION_LIMIT_RETRIES:
-                    logger.error(
-                        f"OperationalError reconnection retry exceeded: {oe}")
-                    raise oe  # Corrected from 'raise error'
-                else:
-                    logger.error(
-                        f"OperationalError during connection: {oe}")
-                    self.connection = None
+            total_downtime = 0  # Total downtime in milliseconds
+            retry_attempts = 0
+
+            while retry_counter <= CONNECTION_LIMIT_RETRIES:
+                try:
+                    start_time = time.time()
+                    self.connection = psycopg2.connect(
+                        host=self.host,
+                        port=self.port,
+                        dbname=self.database,
+                        user=self.user,
+                        password=self.password,
+                        connect_timeout=3,
+                    )
+                    self.connection.autocommit = True
+                    elapsed_time = (time.time() - start_time) * 1000  # milliseconds
+                    total_downtime += elapsed_time
+
+                    self.request_event.fire(
+                        request_type="PG_QUERY",
+                        name="CONNECT",
+                        response_time=elapsed_time,
+                        response_length=0,
+                    )
+                    logger.info(
+                        f"Established connection to PostgreSQL at {self.host}:{self.port}"
+                    )
+
+                    # Report reconnection metrics to Locust
+                    if retry_attempts > 0:
+                        events.request_success.fire(
+                            request_type="DB_RECONNECT",
+                            name="Reconnect",
+                            response_time=total_downtime,
+                            response_length=retry_attempts
+                        )
+                        logger.info(
+                            f"Reconnected to PostgreSQL after {retry_attempts} attempts with total downtime {total_downtime:.2f} ms"
+                        )
+
+                    return self.connection
+
+                except psycopg2.OperationalError as oe:
+                    elapsed_time = (time.time() - start_time) * 1000  # milliseconds
+                    total_downtime += elapsed_time
+                    retry_attempts += 1
                     retry_counter += 1
-                    time.sleep(2)
-                    return self.connect(retry_counter)  # Added return
-            except (Exception, psycopg2.Error) as error:
-                logger.error(f"Unknown error during connect: {error}")
-                self.request_event.fire(
-                    request_type="PG_QUERY",
-                    name="CONNECT",
-                    response_time=0,
-                    response_length=0,
-                    exception=error,  # Corrected from 'e'
-                )
-                self.connection = None
+
+                    self.request_event.fire(
+                        request_type="PG_QUERY",
+                        name="CONNECT",
+                        response_time=elapsed_time,
+                        response_length=0,
+                        exception=oe,
+                    )
+
+                    logger.error(
+                        f"OperationalError during connection attempt {retry_attempts}: {oe}"
+                    )
+
+                    if not self.reconnect or retry_counter > CONNECTION_LIMIT_RETRIES:
+                        logger.error(
+                            f"OperationalError reconnection retry exceeded after {retry_attempts} attempts: {oe}"
+                        )
+
+                        # Report failure to Locust
+                        events.request.fire(
+                            request_type="DB_RECONNECT",
+                            name="Reconnect",
+                            response_time=total_downtime,
+                            response_length=0,
+                            exception=oe
+                        )
+
+
+                        raise oe
+                    else:
+                        logger.info(
+                            f"Retrying connection in 2 seconds... (Attempt {retry_attempts}/{CONNECTION_LIMIT_RETRIES})"
+                        )
+                        time.sleep(2)
+
+                except (Exception, psycopg2.Error) as error:
+                    logger.error(f"Unknown error during connect: {error}")
+                    self.request_event.fire(
+                        request_type="PG_QUERY",
+                        name="CONNECT",
+                        response_time=0,
+                        response_length=0,
+                        exception=error,
+                    )
+
+                    # Report failure to Locust
+                    events.request.fire(
+                        request_type="DB_RECONNECT",
+                        name="Reconnect",
+                        response_time=0,
+                        response_length=0,
+                        exception=error
+                    )
+
+                    self.connection = None
+                    break  # Exit the loop on unknown errors
 
         return self.connection
 
@@ -174,6 +229,16 @@ class PostgresSession:
                     response_length=0,
                     exception=exception,
                 )
+
+                # Report failure to Locust
+                events.request.fire(
+                    request_type="DB_RECONNECT",
+                    name="Reconnect",
+                    response_time=0,
+                    response_length=0,
+                    exception=exception
+                )
+
                 return PostgresResponse(
                     success=False,
                     response_time=0,
@@ -185,7 +250,7 @@ class PostgresSession:
                 retry_counter += 1
                 time.sleep(1)
                 self.reset()
-                return self.execute_query(query, params, retry_counter)  # Added return
+                return self.execute_query(query, params, retry_counter)
         except (Exception, psycopg2.Error) as error:
             exception = OperationalError("Unknown error connection: " + str(error))
             self.request_event.fire(
@@ -195,6 +260,16 @@ class PostgresSession:
                 response_length=0,
                 exception=exception,
             )
+
+            # Report failure to Locust
+            events.request.fire(
+                request_type="DB_RECONNECT",
+                name="Reconnect",
+                response_time=0,
+                response_length=0,
+                exception=exception,
+            )
+
             return PostgresResponse(
                 success=False,
                 response_time=0,
