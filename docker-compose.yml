@@ -27,51 +27,10 @@ services:
       - PG_PORT=5000
       - PG_USER=postgres
       - PG_PASSWORD=postgres
-  
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-  worker2:
-    build:
-      context: .
-      dockerfile: DockerFile
-    environment:
-      - PG_HOST=192.168.43.76
-      - PG_DATABASE=postgres
-      - PG_PORT=5000
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-  
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-  worker3:
-    build:
-      context: .
-      dockerfile: DockerFile
-    environment:
-      - PG_HOST=192.168.43.76
-      - PG_DATABASE=postgres
-      - PG_PORT=5000
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-  
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-  worker4:
-    build:
-      context: .
-      dockerfile: DockerFile
-    environment:
-      - PG_HOST=192.168.43.76
-      - PG_DATABASE=postgres
-      - PG_PORT=5000
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-  
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+    deploy:
+      mode: replicated
+      replicas: 5
 
-
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host master
