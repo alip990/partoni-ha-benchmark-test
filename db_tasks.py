@@ -511,7 +511,6 @@ def seed_data(client):
                 """,
                 (prov_title, now)
             )
-            
             # Retrieve the newly created Province ID
             province_id = province.result[0][0]
             
@@ -527,7 +526,6 @@ def seed_data(client):
 
         # You could query the existing provinces, pick random IDs, etc.
         province_ids_res = client.execute_query('SELECT "Id" FROM "DM"."Province" LIMIT 5;')
-        
         if province_ids_res.success and province_ids_res.response_length:
             province_ids = [row[0] for row in province_ids_res.result]
             for _ in range(5):
@@ -624,64 +622,60 @@ def write_data(client):
     Example: Insert into multiple DM tables in one go,
     referencing existing rows, to stress the DB with writes.
     """
-    try:
-        # 1) Insert new device
+    # 1) Insert new device
 
-        now = datetime.datetime.utcnow()
-        device_res = client.execute_query(
-            """
-            INSERT INTO "DM"."Device" 
-                ("DeviceStatus", "Activated", "CreationDate", "IsDeleted")
-            VALUES 
-                (%s, %s, %s, FALSE)
-            RETURNING "Id";
-            """,
-            (random.randint(1,5), True, now)
+    now = datetime.datetime.utcnow()
+    device_res = client.execute_query(
+        """
+        INSERT INTO "DM"."Device" 
+            ("DeviceStatus", "Activated", "CreationDate", "IsDeleted")
+        VALUES 
+            (%s, %s, %s, FALSE)
+        RETURNING "Id";
+        """,
+        (random.randint(1,5), True, now)
+    )
+
+    if not device_res.success or not device_res.response_length:
+        raise Exception("Failed to insert new Device.")
+
+    new_device_id = device_res.result[0][0]
+    # 2) Insert a new device item
+    production_date = now - datetime.timedelta(days=random.randint(1,100))
+    install_date = now - datetime.timedelta(days=random.randint(1,50))
+
+    device_item_res = client.execute_query(
+        """
+        INSERT INTO "DM"."DeviceItem"
+            ("Name", "DeviceItemType", "SerialNo", 
+                "ProductionDate", "InstallationDate", 
+                "DeviceItemStatus", "Activated", "DeviceId", 
+                "ManufacturerId", "CreationDate", "IsDeleted")
+        VALUES
+            (%s, %s, %s,
+                %s, %s,
+                %s, %s, %s,
+                1,  -- Hardcode manufacturer ID or pick randomly from existing
+                %s, FALSE)
+        RETURNING "Id";
+        """,
+        (
+            "DevItem_" + "".join(random.choices(string.ascii_letters, k=4)),
+            random.randint(1,10),
+            "SN_" + "".join(random.choices(string.ascii_letters + string.digits, k=8)),
+            production_date,
+            install_date,
+            random.randint(1,5),
+            True,
+            new_device_id,
+            now
         )
+    )
+    if not device_item_res.success or not device_item_res.response_length:
+        raise Exception("Failed to insert new DeviceItem.")
 
-        if not device_res.success or not device_res.response_length:
-            raise Exception("Failed to insert new Device.")
+    return device_item_res
 
-        new_device_id = device_res.result[0][0]
-        # 2) Insert a new device item
-        production_date = now - datetime.timedelta(days=random.randint(1,100))
-        install_date = now - datetime.timedelta(days=random.randint(1,50))
-
-        device_item_res = client.execute_query(
-            """
-            INSERT INTO "DM"."DeviceItem"
-                ("Name", "DeviceItemType", "SerialNo", 
-                 "ProductionDate", "InstallationDate", 
-                 "DeviceItemStatus", "Activated", "DeviceId", 
-                 "ManufacturerId", "CreationDate", "IsDeleted")
-            VALUES
-                (%s, %s, %s,
-                 %s, %s,
-                 %s, %s, %s,
-                 1,  -- Hardcode manufacturer ID or pick randomly from existing
-                 %s, FALSE)
-            RETURNING "Id";
-            """,
-            (
-                "DevItem_" + "".join(random.choices(string.ascii_letters, k=4)),
-                random.randint(1,10),
-                "SN_" + "".join(random.choices(string.ascii_letters + string.digits, k=8)),
-                production_date,
-                install_date,
-                random.randint(1,5),
-                True,
-                new_device_id,
-                now
-            )
-        )
-        if not device_item_res.success or not device_item_res.response_length:
-            raise Exception("Failed to insert new DeviceItem.")
-
-        return device_item_res
-
-    except Exception as e:
-        logger.error(f"write error: {e}")
-        raise
 
 
 def read_join(client):
@@ -689,29 +683,25 @@ def read_join(client):
     A complex SELECT that joins multiple tables (Device, DeviceItem, SimCard, etc.)
     to stress the DB. Adjust the JOIN logic depending on your real needs.
     """
-    try:
-        query = """
-        SELECT 
-            d."Id" as device_id, 
-            d."DeviceStatus",
-            di."Id" as device_item_id,
-            di."SerialNo",
-            s."Id" as sim_id,
-            s."Number" as sim_number,
-            rep."Name" as representation_name
-        FROM "DM"."Device" d
-        LEFT JOIN "DM"."DeviceItem" di ON di."DeviceId" = d."Id"
-        LEFT JOIN "DM"."SimCard" s ON s."DeviceId" = d."Id"
-        LEFT JOIN "DM"."Representation" rep ON rep."Id" = d."RepresentationId"
-        WHERE d."IsDeleted" = FALSE
-        ORDER BY d."Id" DESC
-        LIMIT 50;
-        """
-        result = client.execute_query(query)
-        if not result.success or not result.response_length:
-            raise Exception("Failed to insert new DeviceItem.")
+    query = """
+    SELECT 
+        d."Id" as device_id, 
+        d."DeviceStatus",
+        di."Id" as device_item_id,
+        di."SerialNo",
+        s."Id" as sim_id,
+        s."Number" as sim_number,
+        rep."Name" as representation_name
+    FROM "DM"."Device" d
+    LEFT JOIN "DM"."DeviceItem" di ON di."DeviceId" = d."Id"
+    LEFT JOIN "DM"."SimCard" s ON s."DeviceId" = d."Id"
+    LEFT JOIN "DM"."Representation" rep ON rep."Id" = d."RepresentationId"
+    WHERE d."IsDeleted" = FALSE
+    ORDER BY d."Id" DESC
+    LIMIT 50;
+    """
+    result = client.execute_query(query)
+    if not result.success or not result.response_length:
+        raise Exception("Failed to insert new DeviceItem.")
 
-        return result
-    except Exception as e:
-        logger.error(f"read_join error: {e}")
-        raise
+    return result

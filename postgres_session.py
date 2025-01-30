@@ -6,6 +6,7 @@ from psycopg2 import DatabaseError, OperationalError
 from psycopg2 import pool
 from locust import events  # Import Locust events for reporting
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -64,118 +65,63 @@ class PostgresSession:
         self.init()
 
     def init(self):
-        self.connect()
-        self.cursor()
+        try:
+            self.connect()
+            self.cursor()
+        except Exception as oe :
+            logger.error(
+                    f"OperationalError during Initialilze postgres session  : {str(oe)}"
+                )
 
-    def connect(self, retry_counter=0):
+            
+
+    def connect(self, ):
         """
         Establish a connection to the PostgreSQL server with retry logic.
         Tracks downtime and retry attempts and reports them to Locust.
         """
         if not self.connection:
-            total_downtime = 0  # Total downtime in milliseconds
-            retry_attempts = 0
+            try:
+                start_time = time.time()
+                self.connection = psycopg2.connect(
+                    host=self.host,
+                    port=self.port,
+                    dbname=self.database,
+                    user=self.user,
+                    password=self.password,
+                    connect_timeout=1,
+                )
+                self.connection.autocommit = True
+                elapsed_time = (time.time() - start_time) * 1000  # milliseconds
 
-            while retry_counter <= CONNECTION_LIMIT_RETRIES:
-                try:
-                    start_time = time.time()
-                    self.connection = psycopg2.connect(
-                        host=self.host,
-                        port=self.port,
-                        dbname=self.database,
-                        user=self.user,
-                        password=self.password,
-                        connect_timeout=3,
-                    )
-                    self.connection.autocommit = True
-                    elapsed_time = (time.time() - start_time) * 1000  # milliseconds
-                    total_downtime += elapsed_time
+                self.request_event.fire(
+                    request_type="PG_QUERY",
+                    name="CONNECT",
+                    response_time=elapsed_time,
+                    response_length=0,
+                )
+                logger.info(
+                    f"Established connection to PostgreSQL at {self.host}:{self.port}"
+                )
 
-                    self.request_event.fire(
-                        request_type="PG_QUERY",
-                        name="CONNECT",
-                        response_time=elapsed_time,
-                        response_length=0,
-                    )
-                    logger.info(
-                        f"Established connection to PostgreSQL at {self.host}:{self.port}"
-                    )
+                return self.connection
+            except (Exception, psycopg2.Error , psycopg2.OperationalError) as oe:
+                elapsed_time = (time.time() - start_time) * 1000  # milliseconds
 
-                    # Report reconnection metrics to Locust
-                    if retry_attempts > 0:
-                        events.request_success.fire(
-                            request_type="DB_RECONNECT",
-                            name="Reconnect",
-                            response_time=total_downtime,
-                            response_length=retry_attempts
-                        )
-                        logger.info(
-                            f"Reconnected to PostgreSQL after {retry_attempts} attempts with total downtime {total_downtime:.2f} ms"
-                        )
+                self.request_event.fire(
+                    request_type="PG_QUERY",
+                    name="CONNECT",
+                    response_time=elapsed_time,
+                    response_length=0,
+                    exception=oe,
+                )
 
-                    return self.connection
-
-                except psycopg2.OperationalError as oe:
-                    elapsed_time = (time.time() - start_time) * 1000  # milliseconds
-                    total_downtime += elapsed_time
-                    retry_attempts += 1
-                    retry_counter += 1
-
-                    self.request_event.fire(
-                        request_type="PG_QUERY",
-                        name="CONNECT",
-                        response_time=elapsed_time,
-                        response_length=0,
-                        exception=oe,
-                    )
-
-                    logger.error(
-                        f"OperationalError during connection attempt {retry_attempts}: {oe}"
-                    )
-
-                    if not self.reconnect or retry_counter > CONNECTION_LIMIT_RETRIES:
-                        logger.error(
-                            f"OperationalError reconnection retry exceeded after {retry_attempts} attempts: {oe}"
-                        )
-
-                        # Report failure to Locust
-                        events.request.fire(
-                            request_type="DB_RECONNECT",
-                            name="Reconnect",
-                            response_time=total_downtime,
-                            response_length=0,
-                            exception=oe
-                        )
+                logger.error(
+                    f"OperationalError during connection attempt : {str(oe)}"
+                )
+                raise Exception ('OperationalError during connection:'+str (oe))
 
 
-                        raise oe
-                    else:
-                        logger.info(
-                            f"Retrying connection in 2 seconds... (Attempt {retry_attempts}/{CONNECTION_LIMIT_RETRIES})"
-                        )
-                        time.sleep(2)
-
-                except (Exception, psycopg2.Error) as error:
-                    logger.error(f"Unknown error during connect: {error}")
-                    self.request_event.fire(
-                        request_type="PG_QUERY",
-                        name="CONNECT",
-                        response_time=0,
-                        response_length=0,
-                        exception=error,
-                    )
-
-                    # Report failure to Locust
-                    events.request.fire(
-                        request_type="DB_RECONNECT",
-                        name="Reconnect",
-                        response_time=0,
-                        response_length=0,
-                        exception=error
-                    )
-
-                    self.connection = None
-                    break  # Exit the loop on unknown errors
 
         return self.connection
 
@@ -185,11 +131,27 @@ class PostgresSession:
         self.cursor()
 
     def cursor(self):
-        if not self._cursor or self._cursor.closed:
-            if not self.connection:
-                self.connect()
-            self._cursor = self.connection.cursor()
+        try:
+            if not self._cursor or self._cursor.closed:
+                if not self.connection:
+                    self.connect()
+                self._cursor = self.connection.cursor()
+                return self._cursor
             return self._cursor
+        except psycopg2.InterfaceError as e:
+            logger.error(f"InterfaceError Connection Closed.closing connection: {e}")
+            if self.connection:
+                if self._cursor:
+                    self._cursor.close()
+                self.connection.close()
+            self.connection = None
+            self._cursor = None 
+            time.sleep(1)
+            raise Exception ('InterfaceError Connection Closed.closing connection:'+str (e))
+
+            
+
+        
 
     def execute_query(self, query: str, params: Optional[tuple] = None, retry_counter=0) -> PostgresResponse:
         """
@@ -197,13 +159,14 @@ class PostgresSession:
         """
         try:
             start_time = time.time()
-            self._cursor.execute(query, params)
-            if self._cursor.description:
-                result = self._cursor.fetchall()
+            cursor= self.cursor()
+            cursor.execute(query, params)
+            if cursor.description:
+                result = cursor.fetchall()
                 response_length = len(result)
             else:
                 result = []
-                response_length = self._cursor.rowcount
+                response_length = cursor.rowcount
             response_time = (time.time() - start_time) * 1000  # milliseconds
             self.request_event.fire(
                 request_type="PG_QUERY",
@@ -218,65 +181,15 @@ class PostgresSession:
                 response_length=response_length,
                 result=result
             )
-        except (OperationalError, DatabaseError) as oe:
-            if retry_counter >= 5:
-                exception = OperationalError(
-                    "Failed to establish connection: " + str(oe))
+        except (OperationalError, DatabaseError , Exception, psycopg2.Error) as oe:
                 self.request_event.fire(
                     request_type="PG_QUERY",
                     name=query.split()[0].upper(),
                     response_time=0,
                     response_length=0,
-                    exception=exception,
+                    exception=oe,
                 )
-
-                # Report failure to Locust
-                events.request.fire(
-                    request_type="DB_RECONNECT",
-                    name="Reconnect",
-                    response_time=0,
-                    response_length=0,
-                    exception=exception
-                )
-
-                return PostgresResponse(
-                    success=False,
-                    response_time=0,
-                    exception=exception,
-                    response_length=0,
-                    result=[]
-                )
-            else:
-                retry_counter += 1
-                time.sleep(1)
-                self.reset()
-                return self.execute_query(query, params, retry_counter)
-        except (Exception, psycopg2.Error) as error:
-            exception = OperationalError("Unknown error connection: " + str(error))
-            self.request_event.fire(
-                request_type="PG_QUERY",
-                name=query.split()[0].upper(),
-                response_time=0,
-                response_length=0,
-                exception=exception,
-            )
-
-            # Report failure to Locust
-            events.request.fire(
-                request_type="DB_RECONNECT",
-                name="Reconnect",
-                response_time=0,
-                response_length=0,
-                exception=exception,
-            )
-
-            return PostgresResponse(
-                success=False,
-                response_time=0,
-                exception=exception,
-                response_length=0,
-                result=[]
-            )
+                raise Exception(oe)
 
     def close(self):
         """

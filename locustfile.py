@@ -2,6 +2,9 @@ import os
 import time
 import logging
 import inspect
+from locust import runners
+runners.HEARTBEAT_DEAD_INTERNAL = 600 # 10 minutes instead of 1 minute, which is the default
+runners.HEARTBEAT_LIVENESS = 30 # default is to make three attempts
 
 from locust import User, events, tag, task
 from postgres_session import PostgresSession
@@ -46,7 +49,6 @@ def custom_timer(func):
                 name=func.__name__,
                 response_time=total_time,
                 response_length=0,
-                tag=function_name
             )
         except Exception as e:
             total_time = int((time.time() - start_time) * 1000)
@@ -56,7 +58,6 @@ def custom_timer(func):
                 response_time=total_time,
                 response_length=0,
                 exception=e,
-                tag=function_name
             )
         return result
 
