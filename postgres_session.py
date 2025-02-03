@@ -1,3 +1,4 @@
+
 import logging
 import time
 from typing import Any, List, Optional
@@ -6,6 +7,8 @@ from psycopg2 import DatabaseError, OperationalError
 from psycopg2 import pool
 from locust import events  # Import Locust events for reporting
 
+import psycogreen.gevent
+psycogreen.gevent.patch_psycopg()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -68,14 +71,12 @@ class PostgresSession:
         try:
             self.connect()
             self.cursor()
-        except Exception as oe :
+        except Exception as oe:
             logger.error(
-                    f"OperationalError during Initialilze postgres session  : {str(oe)}"
-                )
+                f"OperationalError during Initialize postgres session: {str(oe)}"
+            )
 
-            
-
-    def connect(self, ):
+    def connect(self):
         """
         Establish a connection to the PostgreSQL server with retry logic.
         Tracks downtime and retry attempts and reports them to Locust.
@@ -103,9 +104,8 @@ class PostgresSession:
                 logger.info(
                     f"Established connection to PostgreSQL at {self.host}:{self.port}"
                 )
-
                 return self.connection
-            except (Exception, psycopg2.Error , psycopg2.OperationalError) as oe:
+            except (Exception, psycopg2.Error, psycopg2.OperationalError) as oe:
                 elapsed_time = (time.time() - start_time) * 1000  # milliseconds
 
                 self.request_event.fire(
@@ -117,12 +117,9 @@ class PostgresSession:
                 )
 
                 logger.error(
-                    f"OperationalError during connection attempt : {str(oe)}"
+                    f"OperationalError during connection attempt: {str(oe)}"
                 )
-                raise Exception ('OperationalError during connection:'+str (oe))
-
-
-
+                raise Exception('OperationalError during connection: ' + str(oe))
         return self.connection
 
     def reset(self):
@@ -139,19 +136,15 @@ class PostgresSession:
                 return self._cursor
             return self._cursor
         except psycopg2.InterfaceError as e:
-            logger.error(f"InterfaceError Connection Closed.closing connection: {e}")
+            logger.error(f"InterfaceError Connection Closed, closing connection: {e}")
             if self.connection:
                 if self._cursor:
                     self._cursor.close()
                 self.connection.close()
             self.connection = None
-            self._cursor = None 
+            self._cursor = None
             time.sleep(1)
-            raise Exception ('InterfaceError Connection Closed.closing connection:'+str (e))
-
-            
-
-        
+            raise Exception('InterfaceError Connection Closed, closing connection: ' + str(e))
 
     def execute_query(self, query: str, params: Optional[tuple] = None, retry_counter=0) -> PostgresResponse:
         """
@@ -159,7 +152,7 @@ class PostgresSession:
         """
         try:
             start_time = time.time()
-            cursor= self.cursor()
+            cursor = self.cursor()
             cursor.execute(query, params)
             if cursor.description:
                 result = cursor.fetchall()
@@ -181,15 +174,15 @@ class PostgresSession:
                 response_length=response_length,
                 result=result
             )
-        except (OperationalError, DatabaseError , Exception, psycopg2.Error) as oe:
-                self.request_event.fire(
-                    request_type="PG_QUERY",
-                    name=query.split()[0].upper(),
-                    response_time=0,
-                    response_length=0,
-                    exception=oe,
-                )
-                raise Exception(oe)
+        except (OperationalError, DatabaseError, Exception, psycopg2.Error) as oe:
+            self.request_event.fire(
+                request_type="PG_QUERY",
+                name=query.split()[0].upper(),
+                response_time=0,
+                response_length=0,
+                exception=oe,
+            )
+            raise Exception(oe)
 
     def close(self):
         """
