@@ -639,43 +639,43 @@ def write_data(client):
     if not device_res.success or not device_res.response_length:
         raise Exception("Failed to insert new Device.")
 
-    new_device_id = device_res.result[0][0]
-    # 2) Insert a new device item
-    production_date = now - datetime.timedelta(days=random.randint(1,100))
-    install_date = now - datetime.timedelta(days=random.randint(1,50))
+    # new_device_id = device_res.result[0][0]
+    # # 2) Insert a new device item
+    # production_date = now - datetime.timedelta(days=random.randint(1,100))
+    # install_date = now - datetime.timedelta(days=random.randint(1,50))
 
-    device_item_res = client.execute_query(
-        """
-        INSERT INTO "DM"."DeviceItem"
-            ("Name", "DeviceItemType", "SerialNo", 
-                "ProductionDate", "InstallationDate", 
-                "DeviceItemStatus", "Activated", "DeviceId", 
-                "ManufacturerId", "CreationDate", "IsDeleted")
-        VALUES
-            (%s, %s, %s,
-                %s, %s,
-                %s, %s, %s,
-                1,  -- Hardcode manufacturer ID or pick randomly from existing
-                %s, FALSE)
-        RETURNING "Id";
-        """,
-        (
-            "DevItem_" + "".join(random.choices(string.ascii_letters, k=4)),
-            random.randint(1,10),
-            "SN_" + "".join(random.choices(string.ascii_letters + string.digits, k=8)),
-            production_date,
-            install_date,
-            random.randint(1,5),
-            True,
-            new_device_id,
-            now
-        )
-    )
-    if not device_item_res.success or not device_item_res.response_length:
-        raise Exception("Failed to insert new DeviceItem.")
+    # device_item_res = client.execute_query(
+    #     """
+    #     INSERT INTO "DM"."DeviceItem"
+    #         ("Name", "DeviceItemType", "SerialNo", 
+    #             "ProductionDate", "InstallationDate", 
+    #             "DeviceItemStatus", "Activated", "DeviceId", 
+    #             "ManufacturerId", "CreationDate", "IsDeleted")
+    #     VALUES
+    #         (%s, %s, %s,
+    #             %s, %s,
+    #             %s, %s, %s,
+    #             1,  -- Hardcode manufacturer ID or pick randomly from existing
+    #             %s, FALSE)
+    #     RETURNING "Id";
+    #     """,
+    #     (
+    #         "DevItem_" + "".join(random.choices(string.ascii_letters, k=4)),
+    #         random.randint(1,10),
+    #         "SN_" + "".join(random.choices(string.ascii_letters + string.digits, k=8)),
+    #         production_date,
+    #         install_date,
+    #         random.randint(1,5),
+    #         True,
+    #         new_device_id,
+    #         now
+    #     )
+    # )
+    # if not device_item_res.success or not device_item_res.response_length:
+    #     raise Exception("Failed to insert new DeviceItem.")
 
-    return device_item_res
-
+    # return device_item_res
+    return device_res
 
 
 def read_join(client):
@@ -686,18 +686,8 @@ def read_join(client):
     query = """
     SELECT 
         d."Id" as device_id, 
-        d."DeviceStatus",
-        di."Id" as device_item_id,
-        di."SerialNo",
-        s."Id" as sim_id,
-        s."Number" as sim_number,
-        rep."Name" as representation_name
+        d."DeviceStatus"
     FROM "DM"."Device" d
-    LEFT JOIN "DM"."DeviceItem" di ON di."DeviceId" = d."Id"
-    LEFT JOIN "DM"."SimCard" s ON s."DeviceId" = d."Id"
-    LEFT JOIN "DM"."Representation" rep ON rep."Id" = d."RepresentationId"
-    WHERE d."IsDeleted" = FALSE
-    ORDER BY d."Id" DESC
     LIMIT 50;
     """
     result = client.execute_query(query)
