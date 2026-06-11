@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: DockerFile
-    environment:
+    env:
       - PG_HOST=10.10.10.160
       - PG_DATABASE=postgres
       - PG_PORT=5000

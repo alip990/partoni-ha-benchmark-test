@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HA Benchmark Report — 2026-06-11 14:55:32</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root { --bg:#0f1117; --panel:#1a1d27; --accent:#6c63ff; --green:#00d085; --red:#ff4757; --text:#e2e8f0; --muted:#94a3b8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:2rem; }
+  h1 { font-size:1.8rem; margin-bottom:.25rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin-bottom:2rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-bottom:2rem; }
+  .card { background:var(--panel); border-radius:12px; padding:1.25rem; border:1px solid #2d3348; }
+  .card h2 { font-size:1rem; color:var(--accent); margin-bottom:.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .kv { display:flex; justify-content:space-between; margin:.25rem 0; font-size:.85rem; }
+  .kv span:first-child { color:var(--muted); }
+  .kv .val { font-weight:600; }
+  .ok  { color:var(--green); }
+  .bad { color:var(--red);   }
+  .warn { color:#f6c90e; }
+  table { width:100%; border-collapse:collapse; margin-top:1rem; }
+  th { background:#2d3348; padding:.65rem 1rem; text-align:left; font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  td { padding:.6rem 1rem; border-bottom:1px solid #2d3348; font-size:.875rem; }
+  tr:hover td { background:#20243a; }
+  .chart-wrap { background:var(--panel); border-radius:12px; padding:1.25rem; border:1px solid #2d3348; margin-bottom:1.5rem; }
+  .chart-wrap h2 { font-size:1rem; color:var(--accent); margin-bottom:1rem; }
+  .section { margin-bottom:2.5rem; }
+  .tag { display:inline-block; padding:.15rem .5rem; border-radius:4px; font-size:.75rem; margin-left:.5rem; }
+  .tag-ha { background:#4c1d95; color:#c4b5fd; }
+  .tag-base { background:#1e3a2e; color:#6ee7b7; }
+</style>
+</head>
+<body>
+<h1>PostgreSQL HA Benchmark Report</h1>
+<p class="sub">Generated 2026-06-11 14:55:32 &nbsp;|&nbsp; Host: 192.168.88.101:9999 &nbsp;|&nbsp; Scenarios: 6</p>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Summary</h2>
+<table>
+<thead><tr>
+  <th>Scenario</th><th>Users</th><th>Requests</th><th>Fail%</th>
+  <th>Avg ms</th><th>P95 ms</th><th>P99 ms</th><th>RPS</th><th>RTO est.</th>
+</tr></thead>
+<tbody>
+
+<tr>
+  <td>Baseline — Mixed Load<span class="tag tag-base">Baseline</span></td>
+  <td>10</td>
+  <td>10197</td>
+  <td class="ok">0.0%</td>
+  <td>2.8</td>
+  <td>0</td>
+  <td>0</td>
+  <td>113.1</td>
+  <td class="ok">0s</td>
+</tr>
+
+<tr>
+  <td>Baseline — Read Heavy<span class="tag tag-base">Baseline</span></td>
+  <td>20</td>
+  <td>17190</td>
+  <td class="ok">0.0%</td>
+  <td>3.5</td>
+  <td>0</td>
+  <td>0</td>
+  <td>190.8</td>
+  <td class="ok">0s</td>
+</tr>
+
+<tr>
+  <td>Baseline — Write Heavy<span class="tag tag-base">Baseline</span></td>
+  <td>10</td>
+  <td>10234</td>
+  <td class="ok">0.0%</td>
+  <td>3.0</td>
+  <td>0</td>
+  <td>0</td>
+  <td>113.6</td>
+  <td class="ok">0s</td>
+</tr>
+
+<tr>
+  <td>HA — Leader Crash (A1)<span class="tag tag-ha">HA</span></td>
+  <td>1</td>
+  <td>1081</td>
+  <td class="bad">44.5%</td>
+  <td>68.4</td>
+  <td>0</td>
+  <td>0</td>
+  <td>11.9</td>
+  <td class="bad">20s</td>
+</tr>
+
+<tr>
+  <td>HA — Planned Switchover (A6)<span class="tag tag-ha">HA</span></td>
+  <td>1</td>
+  <td>1</td>
+  <td class="bad">100.0%</td>
+  <td>0.3</td>
+  <td>0</td>
+  <td>0</td>
+  <td>1508.2</td>
+  <td class="ok">0s</td>
+</tr>
+
+<tr>
+  <td>HA — Node Power-Off (A2)<span class="tag tag-ha">HA</span></td>
+  <td>1</td>
+  <td>1</td>
+  <td class="bad">100.0%</td>
+  <td>0.3</td>
+  <td>0</td>
+  <td>0</td>
+  <td>1447.3</td>
+  <td class="ok">0s</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Throughput Over Time (RPS)</h2>
+
+<div class="chart-wrap">
+  <h2>Baseline — Mixed Load</h2>
+  <canvas id="chart_0_rps" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Read Heavy</h2>
+  <canvas id="chart_1_rps" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Write Heavy</h2>
+  <canvas id="chart_2_rps" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Leader Crash (A1)</h2>
+  <canvas id="chart_3_rps" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Planned Switchover (A6)</h2>
+  <canvas id="chart_4_rps" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Node Power-Off (A2)</h2>
+  <canvas id="chart_5_rps" height="80"></canvas>
+</div>
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Latency Over Time (P50 / P95 ms)</h2>
+
+<div class="chart-wrap">
+  <h2>Baseline — Mixed Load</h2>
+  <canvas id="chart_0_lat" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Read Heavy</h2>
+  <canvas id="chart_1_lat" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Write Heavy</h2>
+  <canvas id="chart_2_lat" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Leader Crash (A1)</h2>
+  <canvas id="chart_3_lat" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Planned Switchover (A6)</h2>
+  <canvas id="chart_4_lat" height="80"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Node Power-Off (A2)</h2>
+  <canvas id="chart_5_lat" height="80"></canvas>
+</div>
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Per-Scenario Failure Rates</h2>
+
+<div class="chart-wrap">
+  <h2>Baseline — Mixed Load</h2>
+  <canvas id="chart_0_fail" height="60"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Read Heavy</h2>
+  <canvas id="chart_1_fail" height="60"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>Baseline — Write Heavy</h2>
+  <canvas id="chart_2_fail" height="60"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Leader Crash (A1)</h2>
+  <canvas id="chart_3_fail" height="60"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Planned Switchover (A6)</h2>
+  <canvas id="chart_4_fail" height="60"></canvas>
+</div>
+
+<div class="chart-wrap">
+  <h2>HA — Node Power-Off (A2)</h2>
+  <canvas id="chart_5_fail" height="60"></canvas>
+</div>
+</div>
+
+<script>
+const chartDefaults = {
+  responsive: true,
+  plugins: { legend: { labels: { color: '#94a3b8' } } },
+  scales: {
+    x: { ticks: { color: '#64748b' }, grid: { color: '#2d3348' } },
+    y: { ticks: { color: '#64748b' }, grid: { color: '#2d3348' } }
+  }
+};
+
+new Chart(document.getElementById('chart_0_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'RPS',       data:[0, 0.0, 132.0, 152.5, 155.66666666666666, 144.875, 138.7, 135.1, 123.2, 113.2, 112.8, 111.6, 110.9, 109.4, 107.9, 107.5, 107.8, 107.0, 107.0, 107.1, 106.9, 105.9, 106.0, 106.3, 105.4, 106.3, 107.4, 107.9, 108.9, 110.3, 110.8, 111.5, 111.6, 111.4, 112.3, 111.6, 112.2, 112.5, 112.0, 111.9, 112.5, 111.0, 110.8, 111.3, 111.6],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_0_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_0_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[{label:'Fail/s', data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+
+new Chart(document.getElementById('chart_1_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'RPS',       data:[0, 0.0, 249.5, 293.5, 267.0, 246.75, 235.7, 224.1, 194.0, 189.2, 189.8, 189.4, 188.3, 189.5, 189.6, 189.0, 187.8, 188.2, 186.5, 186.4, 187.8, 188.7, 188.5, 188.3, 187.3, 185.9, 185.8, 185.5, 186.2, 187.6, 187.3, 186.6, 185.0, 182.6, 182.0, 180.5, 180.0, 179.6, 180.5, 176.6, 177.3, 176.1, 176.9, 176.5, 179.5],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_1_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_1_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[{label:'Fail/s', data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+
+new Chart(document.getElementById('chart_2_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'RPS',       data:[0, 0.0, 125.5, 146.5, 148.0, 139.0, 133.8, 131.3, 119.3, 110.9, 110.9, 109.8, 109.3, 109.5, 110.4, 110.7, 111.3, 110.8, 111.4, 111.1, 110.3, 110.3, 110.5, 111.0, 110.6, 110.7, 110.9, 111.6, 110.6, 110.4, 111.0, 110.3, 110.3, 110.5, 110.8, 111.0, 111.2, 110.8, 110.8, 110.2, 110.2, 110.2, 110.0, 110.3, 111.5],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_2_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_2_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s"],
+    datasets:[{label:'Fail/s', data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+
+new Chart(document.getElementById('chart_3_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[
+      {label:'RPS',       data:[0, 0.0, 36.0, 27.5, 24.666666666666668, 23.0, 22.0, 18.4, 18.4, 18.2, 18.2, 18.2, 18.2, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 18.4, 0.0, 0.0, 3.0, 6.8, 10.6, 16.8, 19.4, 19.6, 19.6, 19.8, 19.8, 19.8],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 6.8, 10.6, 16.8, 19.4, 19.6, 19.6, 19.8, 19.8, 19.8], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_3_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_3_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[{label:'Fail/s', data:[0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 6.8, 10.6, 16.8, 19.4, 19.6, 19.6, 19.8, 19.8, 19.8], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+
+new Chart(document.getElementById('chart_4_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "35s", "37s", "39s", "41s", "43s", "45s", "47s", "49s", "51s", "53s", "55s", "57s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[
+      {label:'RPS',       data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_4_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "35s", "37s", "39s", "41s", "43s", "45s", "47s", "49s", "51s", "53s", "55s", "57s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_4_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "35s", "37s", "39s", "41s", "43s", "45s", "47s", "49s", "51s", "53s", "55s", "57s", "59s", "61s", "63s", "65s", "67s", "69s", "71s", "73s", "75s", "77s", "79s", "81s", "83s", "85s", "87s", "89s"],
+    datasets:[{label:'Fail/s', data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+
+new Chart(document.getElementById('chart_5_rps'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s", "90s", "92s", "94s", "96s", "98s", "100s", "102s", "104s", "106s", "108s", "110s", "112s", "114s", "116s", "118s"],
+    datasets:[
+      {label:'RPS',       data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS',  data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_5_lat'), {
+  type:'line', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s", "90s", "92s", "94s", "96s", "98s", "100s", "102s", "104s", "106s", "108s", "110s", "112s", "114s", "116s", "118s"],
+    datasets:[
+      {label:'P50 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_5_fail'), {
+  type:'bar', data:{
+    labels:["0s", "2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s", "90s", "92s", "94s", "96s", "98s", "100s", "102s", "104s", "106s", "108s", "110s", "112s", "114s", "116s", "118s"],
+    datasets:[{label:'Fail/s', data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], backgroundColor:'rgba(255,71,87,.6)', borderColor:'#ff4757', borderWidth:1}]
+  }, options:chartDefaults
+});
+</script>
+</body>
+</html>

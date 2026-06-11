@@ -1,128 +1,198 @@
-import os
-import time
+"""Locust benchmark for Patroni/CNPG HA lab.
+
+User classes (select via --class-picker in the Web UI or LOCUST_USER_CLASSES env):
+  MixedUser       — balanced 5:1 read/write (default)
+  ReadHeavyUser   — 20:1 read/write, uses read_heavy.sql JOIN query
+  WriteHeavyUser  — 1:5 read/write, uses write_heavy.sql CTE chain
+  FailoverProbe   — 10 probes/s single INSERT+SELECT; measures HA RTO precisely
+
+All connection details come from config.py / environment variables.
+SQL queries come from sql/*.sql files — edit those without touching Python.
+"""
 import logging
-import inspect
-from locust import User, events, tag, task
+import time
+
+from locust import User, between, events, tag, task
+
+import config
+from db_tasks import read_heavy, read_simple, run_migration, run_seed, write_heavy, write_simple
 from postgres_session import PostgresSession
 
-# Import the database operation functions
-from db_tasks import (
-    create_schema,
-    seed_data,
-    write_data, 
-    read_join,
-)
-
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-log_file = 'log.log'
-file_handler = logging.FileHandler(log_file)
-file_handler.setLevel(logging.ERROR)
-logger.addHandler(file_handler)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-logger.info('This is an info message')
 
 
-def custom_timer(func):
-    """Measure execution time and send it to Locust events."""
-    def func_wrapper(*args, **kwargs):
-        previous_frame = inspect.currentframe().f_back
-        (_, _, function_name, _, _) = inspect.getframeinfo(previous_frame)
-        start_time = time.time()
+# ── helpers ──────────────────────────────────────────────────────────────────
+
+def _make_clients(self):
+    kwargs = dict(
+        host=config.PG_HOST,
+        database=config.PG_DATABASE,
+        user=config.PG_USER,
+        password=config.PG_PASSWORD,
+        request_event=self.environment.events.request,
+    )
+    self.write_client = PostgresSession(port=config.PG_WRITE_PORT, **kwargs)
+    self.read_client  = PostgresSession(port=config.PG_READ_PORT,  **kwargs)
+
+
+def _close_clients(self):
+    for c in (getattr(self, "write_client", None), getattr(self, "read_client", None)):
+        if c:
+            try:
+                c.close()
+            except Exception:
+                pass
+
+
+def _bootstrap(write_client, attempts=5, delay=2):
+    """Run migration + seed (idempotent). Retries so a user spawned during a
+    brief cluster hiccup still bootstraps; never raises — an on_start exception
+    would permanently kill the user before it runs a single task."""
+    for i in range(attempts):
         try:
-            result = func(*args, **kwargs)
-            total_time = int((time.time() - start_time) * 1000)
-            events.request.fire(
-                request_type="TASK",
-                name=func.__name__,
-                response_time=total_time,
-                response_length=0,
-            )
-            return result
-        except Exception as e:
-            total_time = int((time.time() - start_time) * 1000)
-            events.request.fire(
-                request_type="TASK",
-                name=func.__name__,
-                response_time=total_time,
-                response_length=0,
-                exception=e,
-            )
-            raise
-    return func_wrapper
+            run_migration(write_client)
+            run_seed(write_client)
+            return
+        except Exception as exc:
+            logger.warning("Bootstrap attempt %d/%d failed: %s", i + 1, attempts, exc)
+            time.sleep(delay)
+    logger.warning("Bootstrap gave up after %d attempts — schema may already exist.", attempts)
 
 
-class ComplexDBUser(User):
-    """
-    Represents a PostgreSQL user which executes various SQL queries.
-    """
-    PGHOST = os.getenv("PG_HOST", "localhost")
-    PGDATABASE = os.getenv("PG_DATABASE", "db")
-    PGUSER = os.getenv("PG_USER", "user")
-    PGPASSWORD = os.getenv("PG_PASSWORD", "pass")
-    PG_WRITE_PORT = int(os.getenv("PG_WRITE_PORT", "5000"))
-    PG_READ_PORT = int(os.getenv("PG_READ_PORT", "5001"))
+# ── User classes ─────────────────────────────────────────────────────────────
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Instantiate two separate sessions: one for writes and one for reads.
-        self.write_client = PostgresSession(
-            host=self.PGHOST,
-            port=self.PG_WRITE_PORT,
-            database=self.PGDATABASE,
-            user=self.PGUSER,
-            password=self.PGPASSWORD,
-            request_event=self.environment.events.request,
-        )
-        self.read_client = PostgresSession(
-            host=self.PGHOST,
-            port=self.PG_READ_PORT,
-            database=self.PGDATABASE,
-            user=self.PGUSER,
-            password=self.PGPASSWORD,
-            request_event=self.environment.events.request,
-        )
+class MixedUser(User):
+    """Balanced workload: 5 reads per 1 write — typical OLTP mix.
+    Uses simple read.sql and write.sql queries.
+    Write connections go to PG_WRITE_PORT (primary via PgPool).
+    Read connections go to PG_READ_PORT (load-balanced by PgPool)."""
+
+    wait_time = between(0.05, 0.2)
 
     def on_start(self):
-        """
-        Called when a simulated user starts executing.
-        Use the write client for schema creation and seeding.
-        """
-        try:
-            create_schema(self.write_client)
-            seed_data(self.write_client)
-        except Exception as e:
-            self.environment.events.request.fire(
-                request_type="TASK",
-                name="on_start - create_schema",
-                response_time=0,
-                response_length=0,
-                exception=e,
-            )
-
-    @tag('write_data')
-    @task(2)
-    @custom_timer
-    def task_write_data(self):
-        """
-        Task to insert new data into the database using the write connection.
-        """
-        result = write_data(self.write_client)
-        if not result.success:
-            raise Exception("Failed to write data")
-
-    @task(10)
-    @custom_timer
-    def task_read_with_join(self):
-        """
-        Task to perform a SELECT query with JOIN operations using the read connection.
-        """
-        read_join(self.read_client)
+        _make_clients(self)
+        _bootstrap(self.write_client)
 
     def on_stop(self):
-        """
-        Called when the user stops. Ensures both connections are closed.
-        """
-        self.write_client.close()
-        self.read_client.close()
+        _close_clients(self)
+
+    @tag("write")
+    @task(1)
+    def task_write(self):
+        result = write_simple(self.write_client)
+        if not result.success:
+            raise Exception("write_simple failed")
+
+    @tag("read")
+    @task(5)
+    def task_read(self):
+        result = read_simple(self.read_client)
+        if not result.success:
+            raise Exception("read_simple failed")
+
+
+class ReadHeavyUser(User):
+    """Read-dominated workload: 20 complex reads per 1 write.
+    Uses read_heavy.sql (8-table JOIN with window aggregates) for reads.
+    Models a reporting / analytics workload — good for testing
+    PgPool's read load-balancing across standbys."""
+
+    wait_time = between(0.05, 0.3)
+
+    def on_start(self):
+        _make_clients(self)
+        _bootstrap(self.write_client)
+
+    def on_stop(self):
+        _close_clients(self)
+
+    @tag("write")
+    @task(1)
+    def task_write(self):
+        result = write_simple(self.write_client)
+        if not result.success:
+            raise Exception("write_simple failed")
+
+    @tag("read")
+    @task(20)
+    def task_read_heavy(self):
+        result = read_heavy(self.read_client)
+        if not result.success:
+            raise Exception("read_heavy failed")
+
+
+class WriteHeavyUser(User):
+    """Write-dominated workload: 5 write chains per 1 read.
+    Uses write_heavy.sql (5-table CTE: Province→City→Address→Manufacturer→Device).
+    Models an ingestion / ETL workload — drives replication lag on standbys."""
+
+    wait_time = between(0.05, 0.15)
+
+    def on_start(self):
+        _make_clients(self)
+        _bootstrap(self.write_client)
+
+    def on_stop(self):
+        _close_clients(self)
+
+    @tag("write")
+    @task(5)
+    def task_write_heavy(self):
+        result = write_heavy(self.write_client)
+        if not result.success:
+            raise Exception("write_heavy failed")
+
+    @tag("read")
+    @task(1)
+    def task_read(self):
+        result = read_simple(self.read_client)
+        if not result.success:
+            raise Exception("read_simple failed")
+
+
+class FailoverProbe(User):
+    """High-frequency HA probe: one INSERT + one SELECT per 100ms tick.
+    Measures RTO precisely — each failed request = ~100ms of downtime.
+    Uses a SINGLE write+read connection through the HA endpoint.
+    Fire this class alone with 1 user while triggering failover scenarios."""
+
+    wait_time = between(0.08, 0.12)   # ~10 probes/s
+
+    def on_start(self):
+        kwargs = dict(
+            host=config.PG_HOST,
+            database=config.PG_DATABASE,
+            user=config.PG_USER,
+            password=config.PG_PASSWORD,
+            request_event=self.environment.events.request,
+        )
+        self.client = PostgresSession(port=config.PG_WRITE_PORT, **kwargs)
+        _bootstrap(self.client)
+
+    def on_stop(self):
+        client = getattr(self, "client", None)
+        if client:
+            try:
+                client.close()
+            except Exception:
+                pass
+
+    @task
+    def probe(self):
+        # Write: insert a device, capture its ID
+        write_result = write_simple(self.client)
+        if not write_result.success:
+            raise Exception("probe_write failed")
+
+        # Read: read it back (confirms primary accepted the write and is readable)
+        read_result = read_simple(self.client)
+        if not read_result.success:
+            raise Exception("probe_read failed")
+
+
+# ── Startup event ─────────────────────────────────────────────────────────────
+
+@events.init_command_line_parser.add_listener
+def add_custom_args(parser, **_kw):
+    parser.add_argument("--skip-bootstrap", action="store_true",
+                        help="Skip migration/seed on first user start")

@@ -1,0 +1,39 @@
+name: locust-bench
+
+# Usage:
+#   cp .env.example .env  # edit your DB IPs + credentials
+#   docker compose -f docker/compose.yml up --scale worker=3
+#
+# The master web UI is on http://localhost:8089
+# To run headless: override command in the master service or use run_scenarios.py
+
+x-common: &common
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile
+  volumes:
+    - ../:/mnt/locust       # live-reload: edit SQL files without rebuild
+  env_file:
+    - ../.env               # copy from .env.example first
+
+services:
+  master:
+    <<: *common
+    ports:
+      - "8089:8089"
+    command: >
+      -f /mnt/locust/locustfile.py
+      --master
+      --web-host 0.0.0.0
+      --web-port 8089
+
+  worker:
+    <<: *common
+    depends_on: [master]
+    command: >
+      -f /mnt/locust/locustfile.py
+      --worker
+      --master-host master
+    deploy:
+      mode: replicated
+      replicas: 2
