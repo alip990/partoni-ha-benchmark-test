@@ -211,6 +211,102 @@ def wait_cluster_healthy(timeout=300, label=""):
     return False
 
 
+def cluster_snapshot():
+    """Compact cluster state: leader, max timeline, member roles — recorded
+    before/after every scenario so the report shows exactly what moved."""
+    members = get_members()
+    return {
+        "leader":   current_leader(members),
+        "timeline": max((m.get("timeline") or 0) for m in members) if members else None,
+        "members":  [f"{m.get('name')}={m.get('role')}/{m.get('state')}" for m in members],
+    }
+
+
+def max_replica_lag(members=None):
+    """Max streaming lag (bytes) across replicas — 0 when fully caught up."""
+    members = members if members is not None else get_members()
+    lags = [m.get("lag") or 0 for m in members
+            if m.get("role") in ("replica", "sync_standby") and isinstance(m.get("lag"), int)]
+    return max(lags) if lags else 0
+
+
+def _pg_query(sql):
+    """One-shot query through the PgPool write port; returns list of tuples."""
+    conn = psycopg2.connect(
+        host=config.PG_HOST, port=config.PG_WRITE_PORT,
+        dbname=config.PG_DATABASE, user=config.PG_USER,
+        password=config.PG_PASSWORD, connect_timeout=5,
+    )
+    try:
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute(sql)
+        return cur.fetchall()
+    finally:
+        conn.close()
+
+
+def _shell_capture(cmd, timeout=20):
+    try:
+        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=timeout)
+        return r.stdout.strip()
+    except Exception as exc:
+        return f"<capture failed: {exc}>"
+
+
+# every $ is escaped so the LOCAL shell passes it through to the node's shell
+_SPECS_REMOTE = ("nproc; "
+                 "awk -F': ' '/model name/{print \\$2; exit}' /proc/cpuinfo; "
+                 "free -m | awk '/^Mem:/{print \\$2}'; "
+                 "uname -r; "
+                 ". /etc/os-release; echo \\$PRETTY_NAME")
+
+
+def _node_specs(shell_prefix):
+    # the \$ survives the local shell in both cases; ssh/sh expands it remotely
+    out = _shell_capture(f'{shell_prefix} "{_SPECS_REMOTE}"' if shell_prefix
+                         else f'sh -c "{_SPECS_REMOTE}"')
+    lines = (out.splitlines() + [""] * 5)[:5]
+    return {"cpu_cores": lines[0], "cpu_model": lines[1].strip(),
+            "ram_mb": lines[2], "kernel": lines[3], "os": lines[4]}
+
+
+def capture_environment():
+    """Snapshot everything the numbers depend on: PostgreSQL version + non-default
+    settings (via SQL), Patroni dynamic config, PgPool failure-detection params,
+    and CPU/RAM/OS of every node + the load-generator host."""
+    print("Capturing environment (PostgreSQL config, node specs) …")
+    env = {"captured_at": datetime.now().isoformat(timespec="seconds")}
+
+    try:
+        env["postgres_version"] = _pg_query("SELECT version()")[0][0]
+        env["database_size"] = _pg_query(
+            f"SELECT pg_size_pretty(pg_database_size('{config.PG_DATABASE}'))")[0][0]
+        env["pg_settings"] = [
+            {"name": n, "setting": s, "unit": u or "", "source": src}
+            for n, s, u, src in _pg_query(
+                "SELECT name, setting, unit, source FROM pg_settings "
+                "WHERE source NOT IN ('default') ORDER BY name")]
+    except Exception as exc:
+        env["pg_settings_error"] = str(exc)
+
+    env["patroni_dynamic_config"] = _shell_capture(f"{config.PATRONICTL} show-config")
+    proxy = PROXY_NODE or next(iter(config.LAB_NODES))
+    env["pgpool_params"] = _shell_capture(
+        config.NODE_SHELL.format(node=proxy) +
+        " \"grep -E '^(sr_check_period|health_check_period|health_check_timeout"
+        "|health_check_max_retries|failover_on_backend_error|auto_failback"
+        "|search_primary_node_timeout|load_balance_mode|num_init_children|max_pool)'"
+        " /etc/pgpool2/pgpool.conf\"")
+
+    env["nodes"] = {}
+    for name in config.LAB_NODES:
+        env["nodes"][name] = _node_specs(config.NODE_SHELL.format(node=name))
+    env["nodes"]["host (load generator)"] = _node_specs("")
+    env["cluster"] = cluster_snapshot()
+    return env
+
+
 def pre_leader_off_proxy():
     """If the leader sits on the proxy node (whose PgPool we connect to),
     switch it away first — otherwise killing the leader also kills the proxy
@@ -301,11 +397,16 @@ def _verify_spawned(users, timeout=15):
     return False
 
 
-def _run_command(cmd, name="cmd"):
+def _run_command(cmd, name="cmd", block=True):
     if not cmd:
         return
     print(f"  [{name}] {cmd}")
-    subprocess.run(cmd, shell=True, capture_output=True)
+    if block:
+        subprocess.run(cmd, shell=True, capture_output=True)
+    else:
+        # Inject/recovery during a measurement window must not block the
+        # stats-polling loop (an ssh switchover takes seconds) — fire and forget.
+        subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def wait_custom_stable(cmd, name, timeout=180, interval=5):
@@ -367,6 +468,8 @@ def run_scenario(scenario: dict) -> dict:
     if inject:
         print(f"  [plan] inject at t={inject['delay']}s: {inject['command']}")
 
+    cluster_before = cluster_snapshot()
+
     # 4. fresh stats, then swarm
     _reset()
     time.sleep(1)
@@ -378,6 +481,7 @@ def run_scenario(scenario: dict) -> dict:
     if not _verify_spawned(scenario["users"]):
         print("  [WARN] users did not spawn within 15s — results may be empty")
 
+    started_at = datetime.now().isoformat(timespec="seconds")
     start_ts = time.time()
     injected = False
     recovery_done = False
@@ -391,14 +495,15 @@ def run_scenario(scenario: dict) -> dict:
 
         if inject and not injected and elapsed >= inject["delay"]:
             print(f"  [t={elapsed:.0f}s] injecting failure")
-            _run_command(inject["command"], name=inject["name"])
+            _run_command(inject["command"], name=inject["name"], block=False)
             injected = True
             inject_t = elapsed
 
         if inject and injected and not recovery_done and inject.get("recovery"):
             if elapsed >= inject.get("recovery_delay", scenario["duration"] - 20):
                 print(f"  [t={elapsed:.0f}s] running recovery")
-                _run_command(inject["recovery"], name=inject.get("recovery_name", "recovery"))
+                _run_command(inject["recovery"], name=inject.get("recovery_name", "recovery"),
+                             block=False)
                 recovery_done = True
 
         snap = _get_stats()
@@ -406,6 +511,11 @@ def run_scenario(scenario: dict) -> dict:
         if agg:
             req, fail = agg.get("num_requests", 0), agg.get("num_failures", 0)
             pcts = snap.get("current_response_time_percentiles", {}) or {}
+            try:
+                lag = max_replica_lag()
+            except Exception:
+                lag = None
+            elapsed = time.time() - start_ts   # re-stamp: the poll, not the loop top
             if prev is not None:
                 dt = max(elapsed - prev[0], 1e-6)
                 timeline.append({
@@ -416,17 +526,39 @@ def run_scenario(scenario: dict) -> dict:
                                 or agg.get("median_response_time") or 0,
                     "p95":      pcts.get("response_time_percentile_0.95")
                                 or agg.get("response_time_percentile_0.95") or 0,
+                    "lag":      lag,
                 })
             prev = (elapsed, req, fail)
         time.sleep(2)
 
     _stop_and_wait()
+    ended_at = datetime.now().isoformat(timespec="seconds")
 
-    # 6. final cumulative stats
+    # 6. final cumulative stats — aggregated + per-operation + error signatures
     final = _get_stats()
     agg = _aggregated(final)
+    operations = [
+        {"op": s.get("name"), "requests": s.get("num_requests", 0),
+         "failures": s.get("num_failures", 0),
+         "avg_ms": round(s.get("avg_response_time", 0), 1),
+         "p50_ms": s.get("median_response_time", 0),
+         "p95_ms": s.get("response_time_percentile_0.95", 0),
+         "p99_ms": s.get("response_time_percentile_0.99", 0),
+         "max_ms": round(s.get("max_response_time", 0), 1)}
+        for s in final.get("stats", []) if s.get("name") != "Aggregated"
+    ]
+    errors = [
+        {"op": e.get("name"), "error": e.get("error"),
+         "occurrences": e.get("occurrences", 0)}
+        for e in final.get("errors", [])
+    ]
     result = {"scenario": {k: v for k, v in scenario.items() if k != "inject"},
               "inject_resolved": inject,
+              "started_at": started_at,
+              "ended_at": ended_at,
+              "cluster_before": cluster_before,
+              "operations": operations,
+              "errors": errors,
               "timeline": timeline}
 
     if agg:
@@ -464,6 +596,13 @@ def run_scenario(scenario: dict) -> dict:
         print(f"  [stability] cluster {'STABLE' if stable else 'NOT STABLE'} "
               f"after {result['summary']['stabilize_s']}s")
 
+    result["cluster_after"] = cluster_snapshot()
+    moved = (cluster_before.get("leader"), result["cluster_after"].get("leader"))
+    if moved[0] != moved[1]:
+        print(f"  [cluster] leader moved: {moved[0]} → {moved[1]} "
+              f"(timeline {cluster_before.get('timeline')} → "
+              f"{result['cluster_after'].get('timeline')})")
+
     return result
 
 
@@ -471,7 +610,8 @@ def _estimate_rto(timeline, inject_t):
     """Outage = first sample after injection with failures or zero throughput,
     until the first of >=2 consecutive clean samples. Returns (rto_s,
     detection_lag_s, recovered)."""
-    post = [pt for pt in timeline if pt["t"] >= inject_t]
+    # epsilon guards the rounded sample t (e.g. 46.0) vs raw inject_t (46.04)
+    post = [pt for pt in timeline if pt["t"] >= inject_t - 0.25]
     outage_start = None
     for pt in post:
         if pt["fail_rps"] > 0 or pt["rps"] == 0:
@@ -522,7 +662,9 @@ _HTML_TMPL = """\
 </head>
 <body>
 <h1>PostgreSQL HA Benchmark Report</h1>
-<p class="sub">Generated {generated} &nbsp;|&nbsp; Entry point: PgPool {pg_host}:{pg_write_port} &nbsp;|&nbsp; Scenarios: {num_scenarios}</p>
+<p class="sub">Generated {generated} &nbsp;|&nbsp; Run window: {run_window} &nbsp;|&nbsp; Entry point: PgPool {pg_host}:{pg_write_port} &nbsp;|&nbsp; Scenarios: {num_scenarios}</p>
+
+{environment_section}
 
 <div class="section">
 <h2 style="margin-bottom:1rem;font-size:1.1rem;">Summary</h2>
@@ -552,6 +694,16 @@ deltas, not cumulative averages.</p>
 {latency_charts}
 </div>
 
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Replication Lag Over Time (MB behind primary)</h2>
+{lag_charts}
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Per-Operation Breakdown &amp; Errors</h2>
+{ops_sections}
+</div>
+
 <script>
 const chartDefaults = {{
   responsive: true,
@@ -576,11 +728,55 @@ def _color(val, good_below=None, bad_above=None):
     return "warn"
 
 
-def generate_report(results: list, output_path: str):
+def _environment_html(env):
+    if not env:
+        return ""
+    node_rows = "".join(
+        f"<tr><td>{name}</td><td>{sp.get('cpu_model','?')}</td>"
+        f"<td>{sp.get('cpu_cores','?')}</td><td>{sp.get('ram_mb','?')} MB</td>"
+        f"<td>{sp.get('kernel','?')}</td><td>{sp.get('os','?')}</td></tr>"
+        for name, sp in env.get("nodes", {}).items())
+    settings_rows = "".join(
+        f"<tr><td>{s['name']}</td><td>{s['setting']}{(' ' + s['unit']) if s['unit'] else ''}</td>"
+        f"<td>{s['source']}</td></tr>"
+        for s in env.get("pg_settings", []))
+    cluster = env.get("cluster", {})
+    return f"""
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Environment</h2>
+<div class="chart-wrap">
+  <p><b>PostgreSQL:</b> {env.get('postgres_version', '?')}<br>
+     <b>Database size:</b> {env.get('database_size', '?')} &nbsp;•&nbsp;
+     <b>Cluster at start:</b> leader={cluster.get('leader')}, timeline={cluster.get('timeline')},
+     members: {', '.join(cluster.get('members', []))}<br>
+     <b>Captured:</b> {env.get('captured_at', '?')}</p>
+  <table>
+    <thead><tr><th>Node</th><th>CPU</th><th>Cores</th><th>RAM</th><th>Kernel</th><th>OS</th></tr></thead>
+    <tbody>{node_rows}</tbody>
+  </table>
+  <details style="margin-top:1rem;"><summary style="cursor:pointer;color:var(--accent);">
+    PostgreSQL non-default settings ({len(env.get('pg_settings', []))} — from pg_settings via SQL)</summary>
+    <table><thead><tr><th>Name</th><th>Value</th><th>Source</th></tr></thead>
+    <tbody>{settings_rows}</tbody></table>
+  </details>
+  <details style="margin-top:.5rem;"><summary style="cursor:pointer;color:var(--accent);">
+    Patroni dynamic config (patronictl show-config)</summary>
+    <pre style="padding:1rem;background:#0f1117;border-radius:8px;overflow-x:auto;">{env.get('patroni_dynamic_config', '')}</pre>
+  </details>
+  <details style="margin-top:.5rem;"><summary style="cursor:pointer;color:var(--accent);">
+    PgPool failure-detection parameters</summary>
+    <pre style="padding:1rem;background:#0f1117;border-radius:8px;overflow-x:auto;">{env.get('pgpool_params', '')}</pre>
+  </details>
+</div>
+</div>"""
+
+
+def generate_report(results: list, output_path: str, environment=None, run_window=""):
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     generated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     summary_rows, rps_charts, latency_charts, chart_scripts = [], [], [], []
+    lag_charts, ops_sections = [], []
 
     for i, res in enumerate(results):
         sc = res["scenario"]
@@ -632,10 +828,23 @@ def generate_report(results: list, output_path: str):
             fail_data = json.dumps([pt["fail_rps"] for pt in tl])
             p50_data = json.dumps([pt["p50"] for pt in tl])
             p95_data = json.dumps([pt["p95"] for pt in tl])
-            meta = ""
+            lag_data = json.dumps([round((pt.get("lag") or 0) / 1048576, 2) for pt in tl])
+            parts = []
+            if res.get("started_at"):
+                parts.append(f"run {res['started_at']} → {res.get('ended_at', '?')}")
+            before, after = res.get("cluster_before", {}), res.get("cluster_after", {})
+            if before or after:
+                if before.get("leader") != after.get("leader") or \
+                   before.get("timeline") != after.get("timeline"):
+                    parts.append(f"leader <b>{before.get('leader')}</b> → "
+                                 f"<b>{after.get('leader')}</b> "
+                                 f"(timeline {before.get('timeline')} → {after.get('timeline')})")
+                else:
+                    parts.append(f"leader {before.get('leader')} unchanged "
+                                 f"(timeline {before.get('timeline')})")
             if inject:
-                parts = [f"<b>{inject['name']}</b> at t={inject['delay']}s: "
-                         f"<code>{inject['command']}</code>"]
+                parts.append(f"<b>{inject['name']}</b> at t={inject['delay']}s: "
+                             f"<code>{inject['command']}</code>")
                 if inject.get("recovery"):
                     parts.append(f"<b>{inject.get('recovery_name', 'recovery')}</b> "
                                  f"at t={inject.get('recovery_delay')}s: "
@@ -645,7 +854,7 @@ def generate_report(results: list, output_path: str):
                                  f"<code>{inject['stable_cmd']}</code>")
                 if sm.get("stabilize_s") is not None:
                     parts.append(f"cluster stable after {sm['stabilize_s']}s")
-                meta = " &nbsp;•&nbsp; ".join(parts)
+            meta = " &nbsp;•&nbsp; ".join(parts)
 
             rps_charts.append(f"""
 <div class="chart-wrap">
@@ -658,6 +867,40 @@ def generate_report(results: list, output_path: str):
   <h2>{sc['name']}</h2>
   <canvas id="{cid}_lat" height="80"></canvas>
 </div>""")
+            lag_charts.append(f"""
+<div class="chart-wrap">
+  <h2>{sc['name']}</h2>
+  <canvas id="{cid}_lag" height="60"></canvas>
+</div>""")
+
+            ops = res.get("operations", [])
+            errs = res.get("errors", [])
+            ops_rows = "".join(
+                f"<tr><td>{o['op']}</td><td>{o['requests']}</td>"
+                f"<td class=\"{'bad' if o['failures'] else 'ok'}\">{o['failures']}</td>"
+                f"<td>{o['avg_ms']}</td><td>{o['p50_ms']}</td><td>{o['p95_ms']}</td>"
+                f"<td>{o['p99_ms']}</td><td>{o['max_ms']}</td></tr>"
+                for o in ops)
+            err_html = ""
+            if errs:
+                err_rows = "".join(
+                    f"<tr><td>{e['op']}</td><td><code>{e['error']}</code></td>"
+                    f"<td>{e['occurrences']}</td></tr>" for e in errs)
+                err_html = (f"<p style='margin-top:1rem;color:var(--red);font-size:.85rem;'>"
+                            f"Error signatures:</p><table><thead><tr><th>Operation</th>"
+                            f"<th>Error</th><th>Count</th></tr></thead>"
+                            f"<tbody>{err_rows}</tbody></table>")
+            ops_sections.append(f"""
+<div class="chart-wrap">
+  <h2>{sc['name']}</h2>
+  <table>
+    <thead><tr><th>Operation</th><th>Requests</th><th>Failures</th>
+    <th>Avg ms</th><th>P50 ms</th><th>P95 ms</th><th>P99 ms</th><th>Max ms</th></tr></thead>
+    <tbody>{ops_rows}</tbody>
+  </table>
+  {err_html}
+</div>""")
+
             chart_scripts.append(f"""
 new Chart(document.getElementById('{cid}_rps'), {{
   type:'line', data:{{
@@ -676,16 +919,29 @@ new Chart(document.getElementById('{cid}_lat'), {{
       {{label:'P95 ms', data:{p95_data}, borderColor:'#f6c90e', tension:.3, pointRadius:0}}
     ]
   }}, options:chartDefaults
+}});
+new Chart(document.getElementById('{cid}_lag'), {{
+  type:'line', data:{{
+    labels:{labels},
+    datasets:[
+      {{label:'Max replica lag (MB)', data:{lag_data}, borderColor:'#38bdf8',
+        backgroundColor:'rgba(56,189,248,.15)', fill:true, tension:.3, pointRadius:0}}
+    ]
+  }}, options:chartDefaults
 }});""")
 
     html = _HTML_TMPL.format(
         generated=generated,
+        run_window=run_window or generated,
         pg_host=config.PG_HOST,
         pg_write_port=config.PG_WRITE_PORT,
         num_scenarios=len(results),
+        environment_section=_environment_html(environment),
         summary_rows="\n".join(summary_rows),
         rps_charts="\n".join(rps_charts) or "<p style='color:var(--muted)'>No timeline data collected.</p>",
         latency_charts="\n".join(latency_charts) or "",
+        lag_charts="\n".join(lag_charts) or "",
+        ops_sections="\n".join(ops_sections) or "",
         chart_scripts="\n".join(chart_scripts),
     )
 
@@ -719,6 +975,7 @@ def main():
 
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     output = args.output or os.path.join(config.REPORTS_DIR, f"benchmark_{ts}.html")
+    run_started = datetime.now().isoformat(timespec="seconds")
 
     print(f"Proxy node (benchmark entry point): {PROXY_NODE} ({config.PG_HOST}:{config.PG_WRITE_PORT})")
     print("Scenario commands (override via the named env vars):")
@@ -738,6 +995,7 @@ def main():
         "-f", os.path.join(os.path.dirname(__file__), "locustfile.py"),
         "--web-host", "127.0.0.1",
         "--web-port", str(args.locust_port),
+        "--class-picker",   # REQUIRED: /swarm's user_classes is ignored without it
     ]
     print(f"Starting Locust (standalone) on port {args.locust_port} …")
     proc = subprocess.Popen(locust_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -749,6 +1007,8 @@ def main():
             proc.terminate()
             sys.exit(1)
         print("Locust master ready.")
+
+        environment = capture_environment()
 
         for scenario in selected:
             result = run_scenario(scenario)
@@ -771,11 +1031,30 @@ def main():
         except subprocess.TimeoutExpired:
             proc.kill()
 
-    report_path = generate_report(results, output)
+    run_finished = datetime.now().isoformat(timespec="seconds")
+    report_path = generate_report(results, output, environment=environment,
+                                  run_window=f"{run_started} → {run_finished}")
     json_path = os.path.splitext(report_path)[0] + ".json"
     with open(json_path, "w") as fh:
-        json.dump(results, fh, indent=2, default=str)
+        json.dump({"run_started": run_started, "run_finished": run_finished,
+                   "environment": environment, "results": results},
+                  fh, indent=2, default=str)
     print(f"  Raw results   → {json_path}")
+
+    # append to the report registry so every timestamped run stays findable
+    index_path = os.path.join(os.path.dirname(report_path) or ".", "INDEX.md")
+    new_index = not os.path.exists(index_path)
+    headline = "  ".join(
+        f"{r['scenario']['id'].replace('failover_', '')}={r['summary'].get('rto_s', '—')}s"
+        for r in results if r.get("inject_resolved") and r.get("summary"))
+    with open(index_path, "a") as fh:
+        if new_index:
+            fh.write("# Benchmark report registry\n\n"
+                     "| Run started | Report | Scenarios | RTO headline |\n"
+                     "|---|---|---|---|\n")
+        fh.write(f"| {run_started} | [{os.path.basename(report_path)}]"
+                 f"({os.path.basename(report_path)}) | {len(results)} | {headline or '—'} |\n")
+    print(f"  Registry      → {index_path}")
     print(f"\nDone. Open the report:\n  xdg-open {report_path}")
 
 

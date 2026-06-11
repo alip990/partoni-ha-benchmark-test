@@ -44,14 +44,22 @@ def _close_clients(self):
                 pass
 
 
+_BOOTSTRAPPED = False
+
+
 def _bootstrap(write_client, attempts=5, delay=2):
-    """Run migration + seed (idempotent). Retries so a user spawned during a
-    brief cluster hiccup still bootstraps; never raises — an on_start exception
-    would permanently kill the user before it runs a single task."""
+    """Run migration + seed once per process (idempotent). Retries so a user
+    spawned during a brief cluster hiccup still bootstraps; never raises — an
+    on_start exception would permanently kill the user before its first task.
+    The once-per-process guard keeps migration CREATEs out of scenario stats."""
+    global _BOOTSTRAPPED
+    if _BOOTSTRAPPED:
+        return
     for i in range(attempts):
         try:
             run_migration(write_client)
             run_seed(write_client)
+            _BOOTSTRAPPED = True
             return
         except Exception as exc:
             logger.warning("Bootstrap attempt %d/%d failed: %s", i + 1, attempts, exc)

@@ -25,6 +25,13 @@ LOCUST_WEB_PORT = int(os.getenv("LOCUST_WEB_PORT", "8089"))
 # ── Report output ────────────────────────────────────────────────────────────
 REPORTS_DIR = os.getenv("REPORTS_DIR", os.path.join(_HERE, "reports"))
 
+# ── Standalone mode ──────────────────────────────────────────────────────────
+# STANDALONE=1 → benchmark ANY PostgreSQL (a single server, RDS, another
+# cluster) with nothing but PG_* settings: disables Patroni REST health gates,
+# node SSH capture and the HA failover scenarios (baselines + reports work).
+# The write-path gate still runs: it creates/updates a tiny `ha_gate` table.
+STANDALONE = os.getenv("STANDALONE", "").lower() in ("1", "true", "yes")
+
 # ── HA lab: failure injection (used by run_scenarios.py) ────────────────────
 # These commands are run from the host running run_scenarios.py.
 # Adjust if you're running from inside a node or against Hetzner VMs.
@@ -37,6 +44,10 @@ DOCKER_START  = os.getenv("DOCKER_START",  "docker start")
 
 # Patroni REST API (used by run_scenarios.py for health gates + leader detection)
 PATRONI_REST_PORT = int(os.getenv("PATRONI_REST_PORT", "8008"))
+
+# How to run a shell command on a node (environment capture: CPU/RAM/OS specs).
+# {node} = patroni member name. Hetzner: NODE_SHELL="ssh ubuntu@{node}".
+NODE_SHELL = os.getenv("NODE_SHELL", "ssh {node}")
 LAB_NODES = {                      # patroni member name → IP (must match container names)
     "node1": LAB_NODE1_IP,
     "node2": LAB_NODE2_IP,

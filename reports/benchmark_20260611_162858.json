@@ -1,0 +1,3618 @@
+{
+  "run_started": "2026-06-11T16:28:58",
+  "run_finished": "2026-06-11T16:41:21",
+  "environment": {
+    "captured_at": "2026-06-11T16:28:59",
+    "postgres_version": "PostgreSQL 16.14 (Ubuntu 16.14-1.pgdg24.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+    "database_size": "178 MB",
+    "pg_settings": [
+      {
+        "name": "DateStyle",
+        "setting": "ISO, MDY",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "TimeZone",
+        "setting": "Etc/UTC",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "cluster_name",
+        "setting": "pgcluster",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "config_file",
+        "setting": "/var/lib/postgresql/16/patroni/postgresql.conf",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "data_directory",
+        "setting": "/var/lib/postgresql/16/patroni",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "default_text_search_config",
+        "setting": "pg_catalog.english",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "dynamic_shared_memory_type",
+        "setting": "posix",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "effective_cache_size",
+        "setting": "393216",
+        "unit": "8kB",
+        "source": "configuration file"
+      },
+      {
+        "name": "effective_io_concurrency",
+        "setting": "16",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "hba_file",
+        "setting": "/var/lib/postgresql/16/patroni/pg_hba.conf",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "hot_standby",
+        "setting": "on",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "ident_file",
+        "setting": "/var/lib/postgresql/16/patroni/pg_ident.conf",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "lc_messages",
+        "setting": "C.UTF-8",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "lc_monetary",
+        "setting": "C.UTF-8",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "lc_numeric",
+        "setting": "C.UTF-8",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "lc_time",
+        "setting": "C.UTF-8",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "listen_addresses",
+        "setting": "0.0.0.0",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "log_timezone",
+        "setting": "Etc/UTC",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "maintenance_work_mem",
+        "setting": "262144",
+        "unit": "kB",
+        "source": "configuration file"
+      },
+      {
+        "name": "max_connections",
+        "setting": "200",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "max_locks_per_transaction",
+        "setting": "64",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "max_prepared_transactions",
+        "setting": "0",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "max_replication_slots",
+        "setting": "10",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "max_wal_senders",
+        "setting": "10",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "max_wal_size",
+        "setting": "2048",
+        "unit": "MB",
+        "source": "configuration file"
+      },
+      {
+        "name": "max_worker_processes",
+        "setting": "8",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "min_wal_size",
+        "setting": "80",
+        "unit": "MB",
+        "source": "configuration file"
+      },
+      {
+        "name": "pg_stat_statements.track",
+        "setting": "all",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "port",
+        "setting": "5432",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "primary_conninfo",
+        "setting": "dbname=postgres user=replicator passfile=/var/lib/postgresql/pgpass host=192.168.88.103 port=5432 sslmode=prefer application_name=node2 gssencmode=prefer channel_binding=prefer",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "primary_slot_name",
+        "setting": "node2",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "random_page_cost",
+        "setting": "1.1",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target",
+        "setting": "",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target_lsn",
+        "setting": "",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target_name",
+        "setting": "",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target_time",
+        "setting": "",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target_timeline",
+        "setting": "latest",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "recovery_target_xid",
+        "setting": "",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "shared_buffers",
+        "setting": "131072",
+        "unit": "8kB",
+        "source": "configuration file"
+      },
+      {
+        "name": "shared_preload_libraries",
+        "setting": "pg_stat_statements",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "track_activity_query_size",
+        "setting": "2048",
+        "unit": "B",
+        "source": "configuration file"
+      },
+      {
+        "name": "track_commit_timestamp",
+        "setting": "off",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "track_io_timing",
+        "setting": "on",
+        "unit": "",
+        "source": "configuration file"
+      },
+      {
+        "name": "transaction_deferrable",
+        "setting": "off",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "transaction_isolation",
+        "setting": "read committed",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "transaction_read_only",
+        "setting": "off",
+        "unit": "",
+        "source": "override"
+      },
+      {
+        "name": "wal_keep_size",
+        "setting": "128",
+        "unit": "MB",
+        "source": "configuration file"
+      },
+      {
+        "name": "wal_level",
+        "setting": "replica",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "wal_log_hints",
+        "setting": "on",
+        "unit": "",
+        "source": "command line"
+      },
+      {
+        "name": "work_mem",
+        "setting": "16384",
+        "unit": "kB",
+        "source": "configuration file"
+      }
+    ],
+    "patroni_dynamic_config": "loop_wait: 10\nmaximum_lag_on_failover: 1048576\npostgresql:\n  parameters:\n    effective_cache_size: 3GB\n    effective_io_concurrency: 16\n    maintenance_work_mem: 256MB\n    max_connections: 200\n    max_wal_size: 2GB\n    pg_stat_statements.track: all\n    random_page_cost: 1.1\n    shared_buffers: 1GB\n    shared_preload_libraries: pg_stat_statements\n    track_activity_query_size: 2048\n    track_io_timing: true\n    wal_log_hints: true\n    work_mem: 16MB\n  use_pg_rewind: true\n  use_slots: true\nretry_timeout: 10\nsynchronous_mode: false\nttl: 30",
+    "pgpool_params": "sr_check_period = 5\nhealth_check_period = 5\nhealth_check_timeout = 5\nhealth_check_max_retries = 2\nload_balance_mode = on\nnum_init_children = 32\nmax_pool = 4\nfailover_on_backend_error = off\nauto_failback = on\nsearch_primary_node_timeout = 60",
+    "nodes": {
+      "node1": {
+        "cpu_cores": "12",
+        "cpu_model": "13th Gen Intel(R) Core(TM) i7-1355U",
+        "ram_mb": "23656",
+        "kernel": "6.17.0-29-generic",
+        "os": "Ubuntu 24.04.4 LTS"
+      },
+      "node2": {
+        "cpu_cores": "12",
+        "cpu_model": "13th Gen Intel(R) Core(TM) i7-1355U",
+        "ram_mb": "23656",
+        "kernel": "6.17.0-29-generic",
+        "os": "Ubuntu 24.04.4 LTS"
+      },
+      "node3": {
+        "cpu_cores": "12",
+        "cpu_model": "13th Gen Intel(R) Core(TM) i7-1355U",
+        "ram_mb": "23656",
+        "kernel": "6.17.0-29-generic",
+        "os": "Ubuntu 24.04.4 LTS"
+      },
+      "host (load generator)": {
+        "cpu_cores": "12",
+        "cpu_model": "13th Gen Intel(R) Core(TM) i7-1355U",
+        "ram_mb": "23656",
+        "kernel": "6.17.0-29-generic",
+        "os": "Ubuntu 24.04.4 LTS"
+      }
+    },
+    "cluster": {
+      "leader": "node2",
+      "timeline": 23,
+      "members": [
+        "node1=replica/streaming",
+        "node2=leader/running",
+        "node3=replica/streaming"
+      ]
+    }
+  },
+  "results": [
+    {
+      "scenario": {
+        "id": "baseline_mixed",
+        "name": "Baseline \u2014 Mixed Load",
+        "description": "Balanced 5:1 read/write, no failures. Establishes TPS baseline.",
+        "user_class": "MixedUser",
+        "users": 10,
+        "spawn_rate": 2,
+        "duration": 90
+      },
+      "inject_resolved": null,
+      "started_at": "2026-06-11T16:29:06",
+      "ended_at": "2026-06-11T16:30:36",
+      "cluster_before": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 20,
+          "failures": 0,
+          "avg_ms": 24.8,
+          "p50_ms": 24,
+          "p95_ms": 36,
+          "p99_ms": 36,
+          "max_ms": 36.0
+        },
+        {
+          "op": "CREATE",
+          "requests": 78,
+          "failures": 0,
+          "avg_ms": 1.0,
+          "p50_ms": 0.15807151794433594,
+          "p95_ms": 1,
+          "p99_ms": 37,
+          "max_ms": 37.0
+        },
+        {
+          "op": "DO",
+          "requests": 6,
+          "failures": 0,
+          "avg_ms": 1.4,
+          "p50_ms": 1.2333393096923828,
+          "p95_ms": 2,
+          "p99_ms": 2,
+          "max_ms": 2.0
+        },
+        {
+          "op": "INSERT",
+          "requests": 1186,
+          "failures": 0,
+          "avg_ms": 3.9,
+          "p50_ms": 2,
+          "p95_ms": 5,
+          "p99_ms": 37,
+          "max_ms": 230.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 5794,
+          "failures": 0,
+          "avg_ms": 8.8,
+          "p50_ms": 9,
+          "p95_ms": 11,
+          "p99_ms": 12,
+          "max_ms": 39.0
+        }
+      ],
+      "errors": [],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 78.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 28,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 74.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 25,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 78.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 22,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 75.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 78.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 39120
+        },
+        {
+          "t": 12.0,
+          "rps": 79.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 73.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 73.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 18.0,
+          "rps": 75.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 20.1,
+          "rps": 76.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 41832
+        },
+        {
+          "t": 22.1,
+          "rps": 78.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 24.1,
+          "rps": 72.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 72.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 71.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 77.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 45160
+        },
+        {
+          "t": 32.1,
+          "rps": 74.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 77.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 36.1,
+          "rps": 74.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 38.1,
+          "rps": 76.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 40.1,
+          "rps": 74.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 45776
+        },
+        {
+          "t": 42.1,
+          "rps": 76.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 44.1,
+          "rps": 77.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 46.1,
+          "rps": 75.8,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 48.1,
+          "rps": 72.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 50.1,
+          "rps": 79.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 52.1,
+          "rps": 74.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 54.1,
+          "rps": 72.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 77.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 79.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 79.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 74.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 76.9,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 78.4,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 68.1,
+          "rps": 75.9,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 70.1,
+          "rps": 75.9,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 72.2,
+          "rps": 75.4,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 74.2,
+          "rps": 74.4,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 76.2,
+          "rps": 70.4,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 78.2,
+          "rps": 74.9,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 76.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 73.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 75.9,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 70.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 75.4,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 11,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 7084,
+        "failures": 0,
+        "avg_ms": 8.0,
+        "p50_ms": 9,
+        "p95_ms": 11,
+        "p99_ms": 13,
+        "rps": 78.7,
+        "fail_pct": 0.0
+      },
+      "cluster_after": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      }
+    },
+    {
+      "scenario": {
+        "id": "baseline_read_heavy",
+        "name": "Baseline \u2014 Read Heavy",
+        "description": "20:1 read/write with 8-table JOIN. Tests standby read scalability.",
+        "user_class": "ReadHeavyUser",
+        "users": 20,
+        "spawn_rate": 4,
+        "duration": 90
+      },
+      "inject_resolved": null,
+      "started_at": "2026-06-11T16:30:46",
+      "ended_at": "2026-06-11T16:32:16",
+      "cluster_before": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 32,
+          "failures": 0,
+          "avg_ms": 28.9,
+          "p50_ms": 28,
+          "p95_ms": 38,
+          "p99_ms": 48,
+          "max_ms": 48.0
+        },
+        {
+          "op": "INSERT",
+          "requests": 279,
+          "failures": 0,
+          "avg_ms": 5.6,
+          "p50_ms": 4,
+          "p95_ms": 26,
+          "p99_ms": 51,
+          "max_ms": 170.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 5373,
+          "failures": 0,
+          "avg_ms": 29.9,
+          "p50_ms": 28,
+          "p95_ms": 39,
+          "p99_ms": 67,
+          "max_ms": 222.0
+        }
+      ],
+      "errors": [],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 99.3,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 93,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 80.9,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 76,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 68.4,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 73,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 65.3,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 73,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 59.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 53,
+          "lag": 0
+        },
+        {
+          "t": 12.0,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 59.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 18.1,
+          "rps": 55.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 20.1,
+          "rps": 58.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 22.1,
+          "rps": 57.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 24.1,
+          "rps": 56.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 57.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 58.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 32.1,
+          "rps": 60.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 56.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 36.1,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 38.1,
+          "rps": 56.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 40.1,
+          "rps": 56.4,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 42.1,
+          "rps": 62.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 37,
+          "lag": 0
+        },
+        {
+          "t": 44.1,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 46.1,
+          "rps": 60.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 48.1,
+          "rps": 55.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 50.1,
+          "rps": 60.4,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 52.1,
+          "rps": 59.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 54.1,
+          "rps": 57.4,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 59.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 59.4,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 27,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 59.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 60.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 68.2,
+          "rps": 58.4,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 40,
+          "lag": 0
+        },
+        {
+          "t": 70.2,
+          "rps": 56.9,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 72.2,
+          "rps": 61.4,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 40,
+          "lag": 0
+        },
+        {
+          "t": 74.2,
+          "rps": 59.4,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 76.2,
+          "rps": 58.9,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 78.2,
+          "rps": 57.9,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 61.9,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 58.4,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 61.3,
+          "fail_rps": 0.0,
+          "p50": 29,
+          "p95": 38,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 57.4,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 39,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 55.8,
+          "fail_rps": 0.0,
+          "p50": 28,
+          "p95": 37,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 5684,
+        "failures": 0,
+        "avg_ms": 28.7,
+        "p50_ms": 28,
+        "p95_ms": 39,
+        "p99_ms": 67,
+        "rps": 63.2,
+        "fail_pct": 0.0
+      },
+      "cluster_after": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      }
+    },
+    {
+      "scenario": {
+        "id": "baseline_write_heavy",
+        "name": "Baseline \u2014 Write Heavy",
+        "description": "5:1 write/read CTE chains. Drives the primary's write path.",
+        "user_class": "WriteHeavyUser",
+        "users": 10,
+        "spawn_rate": 2,
+        "duration": 90
+      },
+      "inject_resolved": null,
+      "started_at": "2026-06-11T16:32:26",
+      "ended_at": "2026-06-11T16:33:56",
+      "cluster_before": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 20,
+          "failures": 0,
+          "avg_ms": 22.4,
+          "p50_ms": 22,
+          "p95_ms": 27,
+          "p99_ms": 27,
+          "max_ms": 27.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 1508,
+          "failures": 0,
+          "avg_ms": 9.5,
+          "p50_ms": 10,
+          "p95_ms": 13,
+          "p99_ms": 15,
+          "max_ms": 34.0
+        },
+        {
+          "op": "WITH",
+          "requests": 7227,
+          "failures": 0,
+          "avg_ms": 3.8,
+          "p50_ms": 2,
+          "p95_ms": 12,
+          "p99_ms": 17,
+          "max_ms": 213.0
+        }
+      ],
+      "errors": [],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 93.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 29,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 96.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 24,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 95.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 22,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 94.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 92.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 12.0,
+          "rps": 96.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 99.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 97.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 18.0,
+          "rps": 96.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 20.0,
+          "rps": 94.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 22.0,
+          "rps": 94.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 24.1,
+          "rps": 93.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 94.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 92.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 96.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 32.1,
+          "rps": 95.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 97.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 36.1,
+          "rps": 94.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 38.1,
+          "rps": 99.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 40.1,
+          "rps": 95.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 42.1,
+          "rps": 98.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 44.1,
+          "rps": 96.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 46.1,
+          "rps": 95.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 48.1,
+          "rps": 94.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 50.1,
+          "rps": 93.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 52.1,
+          "rps": 99.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 10,
+          "lag": 0
+        },
+        {
+          "t": 54.1,
+          "rps": 98.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 89.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 90.3,
+          "fail_rps": 0.0,
+          "p50": 3,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 89.8,
+          "fail_rps": 0.0,
+          "p50": 5,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 92.3,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 92.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 90.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 68.1,
+          "rps": 88.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 70.1,
+          "rps": 92.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 72.1,
+          "rps": 91.3,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 17,
+          "lag": 0
+        },
+        {
+          "t": 74.1,
+          "rps": 93.8,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 17,
+          "lag": 0
+        },
+        {
+          "t": 76.1,
+          "rps": 94.8,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 78.2,
+          "rps": 96.3,
+          "fail_rps": 0.0,
+          "p50": 3,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 94.9,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 93.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 94.3,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 96.1,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 97.8,
+          "fail_rps": 0.0,
+          "p50": 2,
+          "p95": 13,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 8755,
+        "failures": 0,
+        "avg_ms": 4.8,
+        "p50_ms": 2,
+        "p95_ms": 13,
+        "p99_ms": 17,
+        "rps": 97.3,
+        "fail_pct": 0.0
+      },
+      "cluster_after": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      }
+    },
+    {
+      "scenario": {
+        "id": "failover_leader_crash",
+        "name": "HA \u2014 Leader Crash (A1)",
+        "description": "SIGKILL the current Patroni leader under probe load. Leader is moved off the proxy node first, so this measures pure DB failover (etcd TTL expiry \u2192 election \u2192 promote \u2192 PgPool reroute).",
+        "user_class": "FailoverProbe",
+        "users": 1,
+        "spawn_rate": 1,
+        "duration": 150,
+        "pre": "leader_off_proxy"
+      },
+      "inject_resolved": {
+        "name": "leader-crash-inject",
+        "delay": 30,
+        "command": "docker kill node2",
+        "recovery_name": "leader-crash-recovery",
+        "recovery": "docker start node2",
+        "recovery_delay": 90,
+        "stable_name": "leader-crash-stable-check",
+        "stable_cmd": "",
+        "target": "node2",
+        "label": "leader-crash-inject: docker kill node2"
+      },
+      "started_at": "2026-06-11T16:34:02",
+      "ended_at": "2026-06-11T16:36:33",
+      "cluster_before": {
+        "leader": "node2",
+        "timeline": 23,
+        "members": [
+          "node1=replica/streaming",
+          "node2=leader/running",
+          "node3=replica/streaming"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 2,
+          "failures": 0,
+          "avg_ms": 3488.2,
+          "p50_ms": 24.06930923461914,
+          "p95_ms": 7000,
+          "p99_ms": 7000,
+          "max_ms": 6952.0
+        },
+        {
+          "op": "INSERT",
+          "requests": 1037,
+          "failures": 2,
+          "avg_ms": 33.0,
+          "p50_ms": 4,
+          "p95_ms": 14,
+          "p99_ms": 30,
+          "max_ms": 21399.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 1035,
+          "failures": 0,
+          "avg_ms": 10.7,
+          "p50_ms": 10,
+          "p95_ms": 13,
+          "p99_ms": 14,
+          "max_ms": 1013.0
+        }
+      ],
+      "errors": [
+        {
+          "op": "INSERT",
+          "error": "OperationalError('FATAL:  unable to read data from DB node 1\\nDETAIL:  EOF encountered with backend\\nserver closed the connection unexpectedly\\n\\tThis probably means the server terminated abnormally\\n\\tbefore or while processing the request.\\n')",
+          "occurrences": 1
+        },
+        {
+          "op": "INSERT",
+          "error": "OperationalError('server closed the connection unexpectedly\\n\\tThis probably means the server terminated abnormally\\n\\tbefore or while processing the request.\\n')",
+          "occurrences": 1
+        }
+      ],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 12.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 18.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 20.0,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 22.0,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 24.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 32.1,
+          "rps": 1.5,
+          "fail_rps": 0.5,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 36.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 38.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 40.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 4,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 42.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 4,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 44.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 4,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 46.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 4,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 48.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 50.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 52.1,
+          "rps": 0.5,
+          "fail_rps": 0.5,
+          "p50": 21000,
+          "p95": 21000,
+          "lag": 0
+        },
+        {
+          "t": 54.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 21000,
+          "p95": 21000,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 21000,
+          "p95": 21000,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 21000,
+          "p95": 21000,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 12.5,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 7000,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 68.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 70.1,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 72.1,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 74.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 76.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 78.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 90.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 92.2,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 94.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 96.2,
+          "rps": 9.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 98.2,
+          "rps": 15.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 100.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 102.2,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 104.2,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 106.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 108.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 110.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 112.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 114.2,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 116.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 5,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 118.2,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 120.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 122.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 124.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 126.2,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 128.3,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 10,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 130.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 11,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 132.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 11,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 134.3,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 11,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 136.3,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 11,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 138.3,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 10,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 140.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 9,
+          "p95": 16,
+          "lag": 0
+        },
+        {
+          "t": 142.3,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 144.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 146.3,
+          "rps": 19.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 148.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 2074,
+        "failures": 2,
+        "avg_ms": 25.2,
+        "p50_ms": 7,
+        "p95_ms": 13,
+        "p99_ms": 17,
+        "rps": 13.8,
+        "fail_pct": 0.1,
+        "rto_s": 28.0,
+        "detect_lag_s": 2.0,
+        "recovered": true,
+        "cluster_stable": true,
+        "stabilize_s": 0.0
+      },
+      "cluster_after": {
+        "leader": "node3",
+        "timeline": 24,
+        "members": [
+          "node1=replica/streaming",
+          "node2=replica/streaming",
+          "node3=leader/running"
+        ]
+      }
+    },
+    {
+      "scenario": {
+        "id": "failover_planned_switchover",
+        "name": "HA \u2014 Planned Switchover (A6)",
+        "description": "patronictl switchover (graceful, coordinated demote+promote). The HA best case: expects RTO of a few seconds, zero data loss.",
+        "user_class": "FailoverProbe",
+        "users": 1,
+        "spawn_rate": 1,
+        "duration": 120
+      },
+      "inject_resolved": {
+        "name": "switchover-inject",
+        "delay": 45,
+        "command": "ssh node1 sudo patronictl -c /etc/patroni/config.yml switchover pgcluster --force",
+        "recovery_name": "switchover-recovery",
+        "recovery": null,
+        "stable_name": "switchover-stable-check",
+        "stable_cmd": "",
+        "target": null,
+        "label": "switchover-inject: ssh node1 sudo patronictl -c /etc/patroni/config.yml switchover pgcluster --force"
+      },
+      "started_at": "2026-06-11T16:36:39",
+      "ended_at": "2026-06-11T16:38:39",
+      "cluster_before": {
+        "leader": "node3",
+        "timeline": 24,
+        "members": [
+          "node1=replica/streaming",
+          "node2=replica/streaming",
+          "node3=leader/running"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 2,
+          "failures": 0,
+          "avg_ms": 1048.1,
+          "p50_ms": 23.460865020751953,
+          "p95_ms": 2100,
+          "p99_ms": 2100,
+          "max_ms": 2073.0
+        },
+        {
+          "op": "INSERT",
+          "requests": 1025,
+          "failures": 12,
+          "avg_ms": 6.9,
+          "p50_ms": 4,
+          "p95_ms": 5,
+          "p99_ms": 24,
+          "max_ms": 2079.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 1013,
+          "failures": 0,
+          "avg_ms": 10.0,
+          "p50_ms": 10,
+          "p95_ms": 14,
+          "p99_ms": 15,
+          "max_ms": 19.0
+        }
+      ],
+      "errors": [
+        {
+          "op": "INSERT",
+          "error": "OperationalError('FATAL:  unable to read data from DB node 2\\nDETAIL:  EOF encountered with backend\\nserver closed the connection unexpectedly\\n\\tThis probably means the server terminated abnormally\\n\\tbefore or while processing the request.\\n')",
+          "occurrences": 1
+        },
+        {
+          "op": "INSERT",
+          "error": "OperationalError('FATAL:  failed to create a backend 2 connection\\nDETAIL:  not executing failover because failover_on_backend_error is off\\n')",
+          "occurrences": 11
+        }
+      ],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 5,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 15.5,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 12.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 18.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 20.0,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 22.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 24.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 32.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 36.1,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 38.1,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 40.1,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 42.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 44.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 46.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 48.1,
+          "rps": 12.0,
+          "fail_rps": 6.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 50.1,
+          "rps": 0.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 52.1,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 54.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 15.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 68.1,
+          "rps": 19.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 70.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 72.1,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 74.1,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 76.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 78.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 90.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 92.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 94.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 96.2,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 98.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 100.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 102.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 104.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 106.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 108.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 110.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 112.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 114.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 116.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 118.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 2040,
+        "failures": 12,
+        "avg_ms": 9.5,
+        "p50_ms": 7,
+        "p95_ms": 13,
+        "p99_ms": 17,
+        "rps": 17.0,
+        "fail_pct": 0.59,
+        "rto_s": 4.0,
+        "detect_lag_s": 2.0,
+        "recovered": true,
+        "cluster_stable": true,
+        "stabilize_s": 0.0
+      },
+      "cluster_after": {
+        "leader": "node1",
+        "timeline": 25,
+        "members": [
+          "node1=leader/running",
+          "node2=replica/streaming",
+          "node3=replica/streaming"
+        ]
+      }
+    },
+    {
+      "scenario": {
+        "id": "failover_node_poweroff",
+        "name": "HA \u2014 Replica Power-Off (A2)",
+        "description": "SIGKILL a streaming replica (not the leader, not the proxy node). Writes should be unaffected; PgPool detaches the dead reader.",
+        "user_class": "FailoverProbe",
+        "users": 1,
+        "spawn_rate": 1,
+        "duration": 150
+      },
+      "inject_resolved": {
+        "name": "replica-poweroff-inject",
+        "delay": 30,
+        "command": "docker kill node2",
+        "recovery_name": "replica-poweroff-recovery",
+        "recovery": "docker start node2",
+        "recovery_delay": 90,
+        "stable_name": "replica-poweroff-stable-check",
+        "stable_cmd": "",
+        "target": "node2",
+        "label": "replica-poweroff-inject: docker kill node2"
+      },
+      "started_at": "2026-06-11T16:38:45",
+      "ended_at": "2026-06-11T16:41:15",
+      "cluster_before": {
+        "leader": "node1",
+        "timeline": 25,
+        "members": [
+          "node1=leader/running",
+          "node2=replica/streaming",
+          "node3=replica/streaming"
+        ]
+      },
+      "operations": [
+        {
+          "op": "CONNECT",
+          "requests": 1,
+          "failures": 0,
+          "avg_ms": 22.3,
+          "p50_ms": 22.284269332885742,
+          "p95_ms": 22,
+          "p99_ms": 22,
+          "max_ms": 22.0
+        },
+        {
+          "op": "INSERT",
+          "requests": 1294,
+          "failures": 0,
+          "avg_ms": 4.8,
+          "p50_ms": 4,
+          "p95_ms": 5,
+          "p99_ms": 21,
+          "max_ms": 212.0
+        },
+        {
+          "op": "SELECT",
+          "requests": 1294,
+          "failures": 0,
+          "avg_ms": 10.3,
+          "p50_ms": 10,
+          "p95_ms": 14,
+          "p99_ms": 15,
+          "max_ms": 21.0
+        }
+      ],
+      "errors": [],
+      "timeline": [
+        {
+          "t": 2.0,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 4.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 6.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 8.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 10.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 12.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 14.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 16.0,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 18.0,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 20.0,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 22.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 24.0,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 26.1,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 28.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 30.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 32.1,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 34.1,
+          "rps": 18.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 28376
+        },
+        {
+          "t": 36.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 28376
+        },
+        {
+          "t": 38.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 28376
+        },
+        {
+          "t": 40.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 28376
+        },
+        {
+          "t": 42.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 28376
+        },
+        {
+          "t": 44.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 57632
+        },
+        {
+          "t": 46.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 57632
+        },
+        {
+          "t": 48.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 57632
+        },
+        {
+          "t": 50.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 57632
+        },
+        {
+          "t": 52.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 12,
+          "lag": 57632
+        },
+        {
+          "t": 54.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 56.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 58.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 60.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 62.1,
+          "rps": 15.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 11,
+          "lag": 0
+        },
+        {
+          "t": 64.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 66.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 68.1,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 70.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 72.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 74.1,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 76.1,
+          "rps": 19.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 78.1,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 80.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 82.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 84.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 86.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 88.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 90.2,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 92.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 94.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 96.2,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 98.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 15,
+          "lag": 0
+        },
+        {
+          "t": 100.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 102.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 8,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 104.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 106.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 108.2,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 5,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 110.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 112.2,
+          "rps": 15.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 114.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 116.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 118.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 120.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 14,
+          "lag": 0
+        },
+        {
+          "t": 122.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 124.2,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 6,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 126.2,
+          "rps": 15.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 128.2,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 130.3,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        },
+        {
+          "t": 132.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 134.3,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 136.3,
+          "rps": 16.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 138.3,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 140.3,
+          "rps": 17.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 142.3,
+          "rps": 15.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 144.3,
+          "rps": 18.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 146.3,
+          "rps": 16.0,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 12,
+          "lag": 0
+        },
+        {
+          "t": 148.3,
+          "rps": 17.5,
+          "fail_rps": 0.0,
+          "p50": 7,
+          "p95": 13,
+          "lag": 0
+        }
+      ],
+      "summary": {
+        "total_requests": 2589,
+        "failures": 0,
+        "avg_ms": 7.6,
+        "p50_ms": 7,
+        "p95_ms": 14,
+        "p99_ms": 16,
+        "rps": 17.3,
+        "fail_pct": 0.0,
+        "rto_s": 0,
+        "detect_lag_s": null,
+        "recovered": true,
+        "cluster_stable": true,
+        "stabilize_s": 0.0
+      },
+      "cluster_after": {
+        "leader": "node1",
+        "timeline": 25,
+        "members": [
+          "node1=leader/running",
+          "node2=replica/streaming",
+          "node3=replica/streaming"
+        ]
+      }
+    }
+  ]
+}

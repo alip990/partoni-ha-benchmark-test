@@ -1,0 +1,454 @@
+[
+  {
+    "scenario": {
+      "id": "failover_planned_switchover",
+      "name": "HA \u2014 Planned Switchover (A6)",
+      "description": "patronictl switchover (graceful, coordinated demote+promote). The HA best case: expects RTO of a few seconds, zero data loss.",
+      "user_class": "FailoverProbe",
+      "users": 1,
+      "spawn_rate": 1,
+      "duration": 120
+    },
+    "inject_resolved": {
+      "name": "switchover-inject",
+      "delay": 45,
+      "command": "ssh node1 sudo patronictl -c /etc/patroni/config.yml switchover pgcluster --force",
+      "recovery_name": "switchover-recovery",
+      "recovery": null,
+      "stable_name": "switchover-stable-check",
+      "stable_cmd": "",
+      "target": null,
+      "label": "switchover-inject: ssh node1 sudo patronictl -c /etc/patroni/config.yml switchover pgcluster --force"
+    },
+    "timeline": [
+      {
+        "t": 2.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 4.0,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 6.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 8.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 10.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 12.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 14.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 16.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 18.0,
+        "rps": 16.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 20.0,
+        "rps": 18.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 12
+      },
+      {
+        "t": 22.0,
+        "rps": 19.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 12
+      },
+      {
+        "t": 24.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 12
+      },
+      {
+        "t": 26.0,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 12
+      },
+      {
+        "t": 28.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 30.0,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      },
+      {
+        "t": 32.0,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 34.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      },
+      {
+        "t": 36.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      },
+      {
+        "t": 38.0,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 40.1,
+        "rps": 18.9,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 42.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 44.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 46.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 48.1,
+        "rps": 11.5,
+        "fail_rps": 5.5,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 50.1,
+        "rps": 18.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 10
+      },
+      {
+        "t": 52.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 54.1,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 56.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 58.1,
+        "rps": 19.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 60.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 62.1,
+        "rps": 16.5,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 64.1,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 66.1,
+        "rps": 18.5,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 68.1,
+        "rps": 18.5,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 70.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 72.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 74.1,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 11
+      },
+      {
+        "t": 76.1,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 78.1,
+        "rps": 16.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 80.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 82.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 84.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 86.1,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 88.1,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 90.1,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 92.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 7,
+        "p95": 12
+      },
+      {
+        "t": 94.1,
+        "rps": 16.5,
+        "fail_rps": 0.0,
+        "p50": 8,
+        "p95": 14
+      },
+      {
+        "t": 96.1,
+        "rps": 16.5,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 14
+      },
+      {
+        "t": 98.1,
+        "rps": 15.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 15
+      },
+      {
+        "t": 100.1,
+        "rps": 16.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 15
+      },
+      {
+        "t": 102.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 15
+      },
+      {
+        "t": 104.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 16
+      },
+      {
+        "t": 106.1,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 15
+      },
+      {
+        "t": 108.1,
+        "rps": 19.0,
+        "fail_rps": 0.0,
+        "p50": 9,
+        "p95": 14
+      },
+      {
+        "t": 110.1,
+        "rps": 17.5,
+        "fail_rps": 0.0,
+        "p50": 8,
+        "p95": 13
+      },
+      {
+        "t": 112.1,
+        "rps": 18.5,
+        "fail_rps": 0.0,
+        "p50": 6,
+        "p95": 11
+      },
+      {
+        "t": 114.1,
+        "rps": 18.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      },
+      {
+        "t": 116.1,
+        "rps": 16.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      },
+      {
+        "t": 118.2,
+        "rps": 17.0,
+        "fail_rps": 0.0,
+        "p50": 5,
+        "p95": 10
+      }
+    ],
+    "summary": {
+      "total_requests": 2154,
+      "failures": 11,
+      "avg_ms": 7.0,
+      "p50_ms": 6,
+      "p95_ms": 11,
+      "p99_ms": 16,
+      "rps": 17.9,
+      "fail_pct": 0.51,
+      "rto_s": 2.0,
+      "detect_lag_s": 2.0,
+      "recovered": true,
+      "cluster_stable": true,
+      "stabilize_s": 0.0
+    }
+  }
+]

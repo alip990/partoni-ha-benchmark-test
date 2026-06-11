@@ -91,7 +91,10 @@ class PostgresSession:
     def execute_query(self, query: str,
                       params: Optional[tuple] = None) -> PostgresResponse:
         start = time.time()
-        op = query.split()[0].upper() if query.split() else "QUERY"
+        # name the operation by its first CODE token — sql files open with -- comments
+        code = "\n".join(l for l in query.splitlines()
+                         if not l.strip().startswith("--")).strip()
+        op = code.split()[0].upper() if code.split() else "QUERY"
         try:
             cur = self._cursor_obj()
             cur.execute(query, params)

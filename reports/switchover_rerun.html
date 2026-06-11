@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HA Benchmark Report — 2026-06-11 16:03:42</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root { --bg:#0f1117; --panel:#1a1d27; --accent:#6c63ff; --green:#00d085; --red:#ff4757; --text:#e2e8f0; --muted:#94a3b8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; padding:2rem; }
+  h1 { font-size:1.8rem; margin-bottom:.25rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin-bottom:2rem; }
+  table { width:100%; border-collapse:collapse; margin-top:1rem; }
+  th { background:#2d3348; padding:.65rem 1rem; text-align:left; font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  td { padding:.6rem 1rem; border-bottom:1px solid #2d3348; font-size:.875rem; }
+  tr:hover td { background:#20243a; }
+  .ok  { color:var(--green); }
+  .bad { color:var(--red);   }
+  .warn { color:#f6c90e; }
+  .chart-wrap { background:var(--panel); border-radius:12px; padding:1.25rem; border:1px solid #2d3348; margin-bottom:1.5rem; }
+  .chart-wrap h2 { font-size:1rem; color:var(--accent); margin-bottom:.35rem; }
+  .chart-wrap p { font-size:.8rem; color:var(--muted); margin-bottom:1rem; }
+  .section { margin-bottom:2.5rem; }
+  .tag { display:inline-block; padding:.15rem .5rem; border-radius:4px; font-size:.75rem; margin-left:.5rem; }
+  .tag-ha { background:#4c1d95; color:#c4b5fd; }
+  .tag-base { background:#1e3a2e; color:#6ee7b7; }
+</style>
+</head>
+<body>
+<h1>PostgreSQL HA Benchmark Report</h1>
+<p class="sub">Generated 2026-06-11 16:03:42 &nbsp;|&nbsp; Entry point: PgPool 192.168.88.101:9999 &nbsp;|&nbsp; Scenarios: 1</p>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Summary</h2>
+<table>
+<thead><tr>
+  <th>Scenario</th><th>Users</th><th>Requests</th><th>Fail%</th>
+  <th>Avg ms</th><th>P50 ms</th><th>P95 ms</th><th>P99 ms</th><th>RPS</th>
+  <th>RTO</th><th>Recovered</th><th>Cluster stable</th>
+</tr></thead>
+<tbody>
+
+<tr>
+  <td>HA — Planned Switchover (A6)<span class="tag tag-ha">HA</span></td>
+  <td>1</td>
+  <td>2154</td>
+  <td class="ok">0.51%</td>
+  <td>7.0</td>
+  <td>6</td>
+  <td>11</td>
+  <td>16</td>
+  <td>17.9</td>
+  <td class="ok">2.0s</td>
+  <td class="ok">yes</td>
+  <td class="ok">yes (0.0s)</td>
+</tr>
+</tbody>
+</table>
+<p style="color:var(--muted);font-size:.8rem;margin-top:.5rem;">
+RTO = duration of the observed outage window (first failing/stalled 2&nbsp;s sample after
+injection → first of two consecutive clean samples). Timeline charts plot per-interval
+deltas, not cumulative averages.</p>
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Throughput Over Time (RPS, 2s deltas)</h2>
+
+<div class="chart-wrap">
+  <h2>HA — Planned Switchover (A6)</h2>
+  <p><b>switchover-inject</b> at t=45s: <code>ssh node1 sudo patronictl -c /etc/patroni/config.yml switchover pgcluster --force</code> &nbsp;•&nbsp; cluster stable after 0.0s</p>
+  <canvas id="chart_0_rps" height="80"></canvas>
+</div>
+</div>
+
+<div class="section">
+<h2 style="margin-bottom:1rem;font-size:1.1rem;">Latency Over Time (P50 / P95 ms)</h2>
+
+<div class="chart-wrap">
+  <h2>HA — Planned Switchover (A6)</h2>
+  <canvas id="chart_0_lat" height="80"></canvas>
+</div>
+</div>
+
+<script>
+const chartDefaults = {
+  responsive: true,
+  plugins: { legend: { labels: { color: '#94a3b8' } } },
+  scales: {
+    x: { ticks: { color: '#64748b' }, grid: { color: '#2d3348' } },
+    y: { ticks: { color: '#64748b' }, grid: { color: '#2d3348' } }
+  }
+};
+
+new Chart(document.getElementById('chart_0_rps'), {
+  type:'line', data:{
+    labels:["2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s", "90s", "92s", "94s", "96s", "98s", "100s", "102s", "104s", "106s", "108s", "110s", "112s", "114s", "116s", "118s"],
+    datasets:[
+      {label:'RPS',      data:[18.0, 17.0, 18.0, 18.0, 18.0, 18.0, 18.0, 18.0, 16.0, 18.5, 19.5, 18.0, 17.0, 18.0, 17.5, 17.5, 18.0, 18.0, 18.0, 18.9, 17.0, 17.0, 17.0, 11.5, 18.5, 17.0, 18.0, 17.0, 19.0, 17.0, 16.5, 17.5, 18.5, 18.5, 17.0, 17.0, 18.0, 18.0, 16.0, 17.0, 17.0, 17.0, 18.0, 17.5, 17.5, 17.0, 16.5, 16.5, 15.0, 16.0, 17.0, 17.0, 17.0, 19.0, 17.5, 18.5, 18.0, 16.0, 17.0],  borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.15)', fill:true, tension:.3, pointRadius:0},
+      {label:'Fail RPS', data:[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], borderColor:'#ff4757', backgroundColor:'rgba(255,71,87,.15)',  fill:true, tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+new Chart(document.getElementById('chart_0_lat'), {
+  type:'line', data:{
+    labels:["2s", "4s", "6s", "8s", "10s", "12s", "14s", "16s", "18s", "20s", "22s", "24s", "26s", "28s", "30s", "32s", "34s", "36s", "38s", "40s", "42s", "44s", "46s", "48s", "50s", "52s", "54s", "56s", "58s", "60s", "62s", "64s", "66s", "68s", "70s", "72s", "74s", "76s", "78s", "80s", "82s", "84s", "86s", "88s", "90s", "92s", "94s", "96s", "98s", "100s", "102s", "104s", "106s", "108s", "110s", "112s", "114s", "116s", "118s"],
+    datasets:[
+      {label:'P50 ms', data:[6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 8, 6, 5, 5, 5], borderColor:'#00d085', tension:.3, pointRadius:0},
+      {label:'P95 ms', data:[11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 11, 10, 11, 10, 10, 11, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 14, 14, 15, 15, 15, 16, 15, 14, 13, 11, 10, 10, 10], borderColor:'#f6c90e', tension:.3, pointRadius:0}
+    ]
+  }, options:chartDefaults
+});
+</script>
+</body>
+</html>

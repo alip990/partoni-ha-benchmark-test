@@ -31,7 +31,7 @@ services:
       - PG_WRITE_PORT=5001
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 4
 
     volumes:
       - ./:/mnt/locust
